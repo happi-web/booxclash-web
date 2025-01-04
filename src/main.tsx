@@ -12,11 +12,11 @@ const Main: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="./" element={<Home />} />
-        <Route path="./play" element={<Play />} />
-        <Route path="./learn" element={<Learn />} />
-        <Route path="./engage" element={<Engage />} />
-        <Route path="./support" element={<Support />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/play" element={<Play />} />
+        <Route path="/learn" element={<Learn />} />
+        <Route path="/engage" element={<Engage />} />
+        <Route path="/support" element={<Support />} />
       </Routes>
     </BrowserRouter>
   );
