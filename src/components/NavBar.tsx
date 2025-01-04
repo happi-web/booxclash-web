@@ -12,15 +12,15 @@ function NavBar() {
     <div className='container-content'>
       <div className="header">
         <div className="logo">
-          <Link to="./"><img src="./images/logo.png" alt="BooxClash Logo" /></Link>
+          <Link to="/"><img src="./images/logo.png" alt="BooxClash Logo" /></Link>
         </div>
         <nav className={`navbar ${menuOpen ? 'active' : ''}`}>
           <ul className="menu">
-            <li><Link to="./">Home</Link></li>
-            <li><Link to="./play">Play</Link></li>
-            <li><Link to="./learn">Learn</Link></li>
-            <li><Link to="./engage">Chat</Link></li>
-            <li><Link to="./support">Support</Link></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/play">Play</Link></li>
+            <li><Link to="/learn">Learn</Link></li>
+            <li><Link to="/engage">Chat</Link></li>
+            <li><Link to="/support">Support</Link></li>
           </ul>
         </nav>
         <div className={`hamburger ${menuOpen ? 'active' : ''}`} onClick={toggleMenu}>
