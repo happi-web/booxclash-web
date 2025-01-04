@@ -10,7 +10,7 @@ import Engage from './components/Engage';
 
 const Main: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/booxclash-web">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play />} />
