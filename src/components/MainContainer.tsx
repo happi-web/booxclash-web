@@ -4,7 +4,7 @@ function MainContainer(){
         <div className="container-content">
             <div className="box-container">
                 <div className="boxes">
-                    <img src="/images/learn.jpg" alt="Kids learning"/>
+                    <img src="./images/learn.jpg" alt="Kids learning"/>
                     <div className="boxes-items">
                         <h3>Discover the Wonders of Science and Math!</h3>
                         <p>Explore our easy-to-follow tutorials and interactive readings
@@ -35,7 +35,7 @@ function MainContainer(){
                         </ul>
                         <button id="learn"><Link to="/play">Explore Our Games</Link></button>
                     </div>
-                    <img src="/images/games.jpg" alt="Kids learning"/>
+                    <img src="./images/games.jpg" alt="Kids learning"/>
                 </div>
             </div>
             <div className="box-container">
