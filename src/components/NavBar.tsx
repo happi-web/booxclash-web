@@ -12,7 +12,7 @@ function NavBar() {
     <div className='container-content'>
       <div className="header">
         <div className="logo">
-          <Link to="/"><img src="./images/logo.png" alt="BooxClash Logo" /></Link>
+          <Link to="/"><img src="./booxclash-web/images/logo.png" alt="BooxClash Logo" /></Link>
         </div>
         <nav className={`navbar ${menuOpen ? 'active' : ''}`}>
           <ul className="menu">

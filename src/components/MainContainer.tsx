@@ -4,7 +4,7 @@ function MainContainer(){
         <div className="container-content">
             <div className="box-container">
                 <div className="boxes">
-                    <img src="./images/learn.jpg" alt="Kids learning"/>
+                    <img src="./booxclash-web/images/learn.jpg" alt="Kids learning"/>
                     <div className="boxes-items">
                         <h3>Discover the Wonders of Science and Math!</h3>
                         <p>Explore our easy-to-follow tutorials and interactive readings
@@ -35,7 +35,7 @@ function MainContainer(){
                         </ul>
                         <button id="learn"><Link to="/play">Explore Our Games</Link></button>
                     </div>
-                    <img src="./images/games.jpg" alt="Kids learning"/>
+                    <img src="./booxclash-web/images/games.jpg" alt="Kids learning"/>
                 </div>
             </div>
             <div className="box-container">
@@ -51,10 +51,10 @@ function MainContainer(){
                     </ul>
                     <button id="learn"><Link to="/engage">Chat With A Friend</Link></button>
                     </div>
-                    <img src="./images/connect.jpg" alt="Kids learning"/>
+                    <img src="./booxclash-web/images/connect.jpg" alt="Kids learning"/>
                 </div>
                 <div className="boxes">
-                    <img src="./images/support.jpg" alt="Kids learning"/>
+                    <img src="./booxclash-web/images/support.jpg" alt="Kids learning"/>
                     <div className="boxes-items">
                     <h3>We're Here for You Every Step of the Way!</h3>
                     <p>We believe in supporting every learner, teacher, and parent. Get the help you need:</p>
