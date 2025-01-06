@@ -19,7 +19,7 @@ function NavBar() {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/learn">Learn</Link></li>
             <li><Link to="/play">Play</Link></li>
-            <li><Link to="/engage">Chat</Link></li>
+            <li><Link to="/chat">Chat</Link></li>
             <li><Link to="/support">Support</Link></li>
           </ul>
         </nav>

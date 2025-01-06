@@ -127,6 +127,7 @@ background-color: var(--primary-color);
 .boxes
 {
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: auto;
   justify-content: space-between;
@@ -138,36 +139,20 @@ background-color: var(--primary-color);
   text-align: left;
   padding: 10px;
 }
-.boxes-items h3
-{
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  margin: 10px auto;
-}
-.boxes-items p
-{
-  color: var(--text-color);
-  margin: 10px auto;
-}
-.boxes-items ul
-{
-  color: var(--text-color);
-  margin-left: 20px;
-}
 .boxes img
 {
-  width: 50%;
-  height: 500px;
+  width: 100%;
+  height: auto;
   object-fit: cover;
 }
 .boxes-items button
 {
   color: var(--text-color);
-  font-size: 0.8rem;
+  font-size:1.2rem;
   text-transform: capitalize;
   font-weight: bolder;
   margin: 10px;
-  padding: 10px;
+  padding: 10px 20px;
   box-shadow:var(--box-shadow);
   border: none;
   border-radius: 20px;
@@ -182,6 +167,9 @@ background-color: var(--primary-color);
 .boxes-items button:hover
 {
   background-color: var(--primary-color);
+}
+.boxes-items button a:hover
+{
   color:white;
 }
 .nav-links li a:hover
@@ -191,9 +179,12 @@ background-color: var(--primary-color);
 }
 .footer
 {
+  position: relative;
   width: 98.5%;
   box-shadow: var(--box-shadow);
   height: auto;
+  bottom: 0;
+  top: 100%;
   text-align: center; 
   font-weight: bold;
   padding: 10px; 
@@ -272,7 +263,7 @@ background-color: var(--primary-color);
 @media (max-width: 768px) {
   .header
 {
-  width: 100%;
+  width: 95.5%;
 }
 
 .navbar {
@@ -319,7 +310,7 @@ background-color: var(--primary-color);
   {
     box-sizing: border-box;
     display: flex;
-    width: 90%;
+    width: 99%;
     height: auto;
     flex-direction: column;
   }
@@ -340,34 +331,13 @@ background-color: var(--primary-color);
     text-align: center;
     padding: 10px;
   }
-  .boxes-items h3
-  {
-    margin-top: 0;
-    font-size: 1.2rem;
-    text-align: center;
-  }
-  .boxes-items p
-  {
-    font-size: 0.8rem;
-    text-align: left;
-  }
-  .boxes-items ul
-  {
-    font-size: 0.8rem;
-    text-align: left;
-    color: var(--text-color);
-    margin-left: 30px;
-  }
   .boxes img
   {
     width: 100%;
     object-fit: cover;
   }
-  .boxes-items button
-  {
-    font-size: 0.8rem;
-  
-    margin: 5px;
-    padding: 5px;
-  }
+  .footer
+{
+  width: 95.5%;
+}
 }

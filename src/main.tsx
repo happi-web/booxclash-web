@@ -5,8 +5,9 @@ import Home from './components/Home';
 import Play from './components/Play';
 import Learn from './components/Learn';
 import Support from './components/Support';
-import Engage from './components/Engage';
-import Lessons from './components/Lessons';
+import Chat from './components/Chat';
+import ScienceLessons from './components/ScienceLessons';
+import MathLessons from './components/MathLessons';
 
 
 const Main: React.FC = () => {
@@ -16,9 +17,10 @@ const Main: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play />} />
         <Route path="/learn" element={<Learn />} />
-        <Route path="/engage" element={<Engage />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/mathLessons" element={<MathLessons />} />
         <Route path="/support" element={<Support />} />
-        <Route path="/lessons" element={<Lessons />} />
+        <Route path="/scienceLessons" element={<ScienceLessons />} />
       </Routes>
     </BrowserRouter>
   );
