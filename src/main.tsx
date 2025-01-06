@@ -6,6 +6,7 @@ import Play from './components/Play';
 import Learn from './components/Learn';
 import Support from './components/Support';
 import Engage from './components/Engage';
+import Lessons from './components/Lessons';
 
 
 const Main: React.FC = () => {
@@ -17,6 +18,7 @@ const Main: React.FC = () => {
         <Route path="/learn" element={<Learn />} />
         <Route path="/engage" element={<Engage />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/lessons" element={<Lessons />} />
       </Routes>
     </BrowserRouter>
   );
