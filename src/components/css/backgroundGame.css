@@ -1,162 +1,109 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  :root {
-    --background-color: #1d1f27; /* Futuristic dark background */
-    --primary-color: #4caf50; /* Bright green for buttons */
-    --secondary-color: #ff5722; /* Bright orange for accents */
-    --text-color: #ffffff; /* White text for readability */
-    --grid-hover-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
-    --button-hover-color: #81c784; /* Button hover effect */
-    --danger-color: #f44336; /* Red for game over states */
-    --box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
-    --border-radius: 8px;
-    --font-family: 'Lexend Deca', sans-serif;
-    --transition: 0.3s ease-in-out;
-  }
-  
-  /* Body Styling */
-  body {
-    font-family: var(--font-family);
-    background-color: var(--background-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-  }
-  
+
+/* Game container */
+.game-container {
+  text-align: center;
+  background: #1e1e2f;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+  width: 100%;
+}
+.game-info
+{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+/* Header styling */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #61dafb;
+}
+
+
+.game-info p {
+  font-size: 1.5rem;
+  margin: 5px 0;
+  border-radius: 20px;
+  background-color: #faebd7;
+  padding: 10px;
+  color: rgb(113, 0, 148);
+  font-weight: bolder;
+}
+
+/* Grid container for the number buttons */
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Number button styling */
+.number-grid button {
+  background: #61dafb;
+  border: none;
+  color: #282c34;
+  font-size: 1.2rem;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.number-grid button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #61dafb;
+}
+
+.number-grid button:active {
+  transform: scale(1);
+  box-shadow: 0 0 5px #61dafb;
+}
+
+/* Start and Reset button styles */
+button {
+  background: #61dafb;
+  border: none;
+  color: #282c34;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #4fb2e0;
+}
+
+button:disabled {
+  background: #3b3f4a;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
   .game-container {
-    text-align: center;
     width: 90%;
-    max-width: 700px;
-    padding: 20px;
-    background: linear-gradient(145deg, #20232c, #171922);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
   }
-  
+
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-  }
-  
-  .game-info {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-  }
-  
-  .game-info p {
-    font-size: 1.2rem;
-    background: var(--grid-hover-color);
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
-  }
-  
-  .number-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-  }
-  
-  .number-grid button {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    border-radius: var(--border-radius);
     font-size: 1.5rem;
-    font-weight: bold;
-    padding: 15px;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--box-shadow);
   }
-  
-  .number-grid button:hover {
-    background-color: var(--button-hover-color);
-    transform: scale(1.05);
+
+  .game-info p {
+    font-size: 1rem;
   }
-  
-  .number-grid button:disabled {
-    background-color: var(--grid-hover-color);
-    color: var(--text-color);
-    cursor: not-allowed;
+
+  .number-grid button {
+    font-size: 1rem;
   }
-  
+
   button {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: var(--box-shadow);
-    margin-top: 10px;
+    font-size: 0.9rem;
   }
-  
-  button:hover {
-    background-color: var(--button-hover-color);
-  }
-  
-  button:disabled {
-    background-color: var(--grid-hover-color);
-    cursor: not-allowed;
-  }
-  
-  p {
-    font-size: 1.2rem;
-  }
-  
-  /* Game Over Message */
-  .game-over {
-    color: var(--danger-color);
-    font-size: 1.8rem;
-    margin: 20px 0;
-    animation: shake 0.5s;
-  }
-  
-  @keyframes shake {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-5px);
-    }
-    50% {
-      transform: translateX(5px);
-    }
-    75% {
-      transform: translateX(-5px);
-    }
-  }
-  
-  /* Next Round Message */
-  .next-round {
-    color: var(--primary-color);
-    font-size: 1.8rem;
-    margin: 20px 0;
-    animation: pulse 1s infinite;
-  }
-  
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 0.8;
-    }
-  }
-  
+}
