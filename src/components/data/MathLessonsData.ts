@@ -1,7 +1,7 @@
 // lessonsData.ts
 export const lessonsData = {
     numbers: {
-      intro: "Numbers",
+      intro: "We use numbers everywhere in our daily lives. ",
       explanation: `1. What are Numbers?
       Numbers are symbols we use to count, measure, or label things.
       We use numbers in everyday life to tell how many things we have or how old we are.

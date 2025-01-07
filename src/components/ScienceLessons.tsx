@@ -7,8 +7,9 @@ const lessonsData = {
   fiveSenses: {
     intro: "We use our five senses to explore the world around us. They help us see, hear, smell, taste, and feel.",
     explanation: `Our five senses are sight, hearing, touch, taste, and smell. 
-    Each sense helps us in different ways:
-    - Sight: Our eyes help us see.
+    Each sense helps us in different ways:`,
+    list:`
+    - Sight: Our eyes help us see.,
     - Hearing: Our ears help us hear sounds.
     - Touch: Our skin helps us feel.
     - Taste: Our tongue helps us taste.
@@ -28,6 +29,7 @@ const lessonsData = {
     intro: "The human body is an amazing system that keeps us alive.",
     explanation: `The body has different systems like the digestive, circulatory, and nervous systems. 
     Each system works together to help us survive.`,
+    list:``,
     flashCards: [
       { word: "Heart", img: "/booxclash-web/images/connect.jpg" },
       { word: "Lungs", img: "/booxclash-web/images/logo.png" },
@@ -91,6 +93,7 @@ const ScienceLessons: React.FC = () => {
           <section>
             <h2>Explanation</h2>
             <p>{lesson.explanation}</p>
+            
           </section>
         </div>
         </div>

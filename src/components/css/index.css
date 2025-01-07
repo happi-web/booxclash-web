@@ -50,6 +50,7 @@ body
   padding: 15px;
   list-style-type: none;
   box-shadow: var(--box-shadow);
+  color: #20180e;
 }
 .navbar ul li a
 {

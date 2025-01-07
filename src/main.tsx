@@ -8,6 +8,10 @@ import Support from './components/Support';
 import Chat from './components/Chat';
 import ScienceLessons from './components/ScienceLessons';
 import MathLessons from './components/MathLessons';
+import MathGames from './components/MathGames';
+import ScienceGames from './components/ScienceGames';
+import Knockout from './components/games/Knockout';
+import NumberHunt from './components/games/NumberHunt';
 
 
 const Main: React.FC = () => {
@@ -21,6 +25,10 @@ const Main: React.FC = () => {
         <Route path="/mathLessons" element={<MathLessons />} />
         <Route path="/support" element={<Support />} />
         <Route path="/scienceLessons" element={<ScienceLessons />} />
+        <Route path="/mathGames" element={<MathGames />} />
+        <Route path="/scienceGames" element={<ScienceGames />} />
+        <Route path="/knockout" element={<Knockout/>} />
+        <Route path="/numberHunt" element={<NumberHunt/>} />
       </Routes>
     </BrowserRouter>
   );
