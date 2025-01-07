@@ -1,66 +1,48 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import path from 'path';
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
 
-// Serve the React frontend
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '../dist')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173/booxclash-web", // Replace with your React app's URL
+    methods: ["GET", "POST"],
+  },
 });
 
-// Game logic
-let players = [];
-let questions = [
-  { id: 1, problem: '5 + 3', answer: 8 },
-  { id: 2, problem: '12 - 4', answer: 8 },
-  { id: 3, problem: '9 x 3', answer: 27 },
+// Serve the React app's build folder
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+});
+
+let users = [
+  { id: "1", name: "Mr. Smith", role: "teacher", isOnline: true },
+  { id: "2", name: "Ms. Johnson", role: "teacher", isOnline: false },
+  { id: "3", name: "Alice", role: "student", isOnline: true },
+  { id: "4", name: "Bob", role: "student", isOnline: true },
 ];
-let currentQuestionIndex = 0;
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
 
-  players.push({ id: socket.id, name: `Player ${players.length + 1}`, health: 100 });
-  io.emit('updatePlayers', players);
+  // Send online users to the connected client
+  socket.emit("onlineUsers", users);
 
-  socket.on('submitAnswer', ({ questionId, answer }) => {
-    const correctAnswer = questions.find((q) => q.id === questionId)?.answer;
-    const player = players.find((p) => p.id === socket.id);
-
-    if (correctAnswer === answer) {
-      player.health = Math.min(player.health + 10, 100);
-    } else {
-      player.health -= 10;
-    }
-
-    io.emit('updatePlayers', players);
-
-    if (player.health <= 0) {
-      io.emit('gameOver');
-      players = [];
-    }
+  // Handle incoming messages
+  socket.on("sendMessage", (message) => {
+    console.log("Message received:", message);
+    io.emit("receiveMessage", message); // Broadcast the message to all connected clients
   });
 
-  socket.on('disconnect', () => {
-    players = players.filter((p) => p.id !== socket.id);
-    io.emit('updatePlayers', players);
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
 });
 
-setInterval(() => {
-  if (players.length > 1 && currentQuestionIndex < questions.length) {
-    io.emit('newQuestion', questions[currentQuestionIndex]);
-    currentQuestionIndex++;
-  }
-}, 10000);
-
-server.listen(3001, () => {
-  console.log('Server is running on http://localhost:3001');
+server.listen(4000, () => {
+  console.log("Server is running on http://localhost:4000");
 });
