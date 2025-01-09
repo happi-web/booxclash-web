@@ -1,61 +1,15 @@
-.math-mayhem-mania {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f9;
-    padding: 20px;
-  }
-  
-  .start-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .start-button:hover {
-    background-color: #45a049;
-  }
-  
-  .question {
-    margin: 20px 0;
-  }
-  
-  .answer-input {
-    padding: 10px;
-    font-size: 16px;
-    width: 200px;
-  }
-  
-  .players {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-  }
-  
-  .player {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    width: 150px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .health-bar {
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    height: 10px;
-    margin: 10px 0;
-  }
-  
-  .health {
-    height: 100%;
-    transition: width 0.3s ease;
-  }
-  
+.dashboard {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+}
+
+.main-container {
+  flex-grow: 1;
+  padding: 20px;
+}

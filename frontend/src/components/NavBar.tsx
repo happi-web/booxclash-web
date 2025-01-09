@@ -17,10 +17,9 @@ function NavBar() {
         <nav className={`navbar ${menuOpen ? 'active' : ''}`}>
           <ul className="menu">
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/learn">Learn</Link></li>
-            <li><Link to="/play">Play</Link></li>
-            <li><Link to="/chat">Chat</Link></li>
             <li><Link to="/support">Support</Link></li>
+            <li><Link to="/signup">SignUp</Link></li>
+            <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
         <div className={`hamburger ${menuOpen ? 'active' : ''}`} onClick={toggleMenu}>
