@@ -30,10 +30,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard" style={{ display: 'flex' }}>
-      {/* Sidebar */}
       <Sidebar onSelect={setActiveComponent} />
-
-      {/* Dynamic Content Area */}
       <div style={{ flex: 1, padding: '20px' }}>
         {renderComponent()}
       </div>

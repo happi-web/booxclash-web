@@ -95,8 +95,6 @@ const UserManagement: React.FC = () => {
   return (
     <div>
       <h2>User Management</h2>
-
-      {/* Add User Form */}
       <form onSubmit={handleAddUser}>
         <h3>Add New User</h3>
         <input
@@ -126,8 +124,6 @@ const UserManagement: React.FC = () => {
           <option value="teacher">Teacher</option>
           <option value="admin">Admin</option>
         </select>
-
-        {/* Conditionally render the grade input if the user is a student */}
         {newUser.role === 'student' && (
           <div>
             <input
@@ -139,11 +135,8 @@ const UserManagement: React.FC = () => {
             />
           </div>
         )}
-
         <button type="submit">Add User</button>
       </form>
-
-      {/* Display Users */}
       <h3>User List</h3>
       <table>
         <thead>
@@ -159,8 +152,7 @@ const UserManagement: React.FC = () => {
             <tr key={user._id}>
               <td>{user.username}</td>
               <td>{user.role}</td>
-              {/* Only display grade for students */}
-              <td>{user.role === 'student' ? user.grade || 'No grade' : 'N/A'}</td>
+              <td>{user.role === 'student' ? user.grade || 'No grade' : ''}</td>
               <td>
                 <button onClick={() => handleDeleteUser(user._id)}>Delete</button>
               </td>

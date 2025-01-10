@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const multer = require("multer");
+const router = express.Router();
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 const PORT = 4000;
@@ -13,18 +16,35 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 
-// User Schema
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, required: true },
-  profilePicture: { type: String }, // Optional field for profile picture
-});
+  const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, required: true },
+    profilePicture: { type: String }, // Optional field for profile picture
+    grade: { type: String, required: function() { return this.role === 'student'; } } // Only required if role is student
+  });
+  
 
 const User = mongoose.model('User', userSchema);
 
 app.use(express.json());
 app.use(cors());
+
+
+const contentSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  type: { type: String, required: true },
+  audience: { type: String, required: true },
+  tags: { type: [String] },
+  embedLink: { type: String }, // For video, simulation, AR/VR
+  filePath: { type: String },  // For flashcard files
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Content = mongoose.model('Content', contentSchema);
+
+module.exports = Content;
 
 // Middleware to authenticate user with token
 const authenticate = (req, res, next) => {
@@ -211,6 +231,87 @@ app.post('/users', authenticate, async (req, res) => {
 });
 
 
+router.post("/api/upload-content", upload.single("file"), async (req, res) => {
+  try {
+    const { title, description, type, audience, tags, embedLink } = req.body;
+    const file = req.file;
 
+    // Create a new content document
+    const newContent = new Content({
+      title,
+      description,
+      type,
+      audience,
+      tags: tags ? tags.split(",") : [],
+      embedLink: type !== "flashcard" ? embedLink : null,
+      filePath: type === "flashcard" ? file.path : null
+    });
+
+    // Save to database
+    await newContent.save();
+
+    res.status(200).json({ message: "Content uploaded successfully!", content: newContent });
+  } catch (err) {
+    console.error("Error uploading content:", err);
+    res.status(500).json({ message: "Server error occurred" });
+  }
+});
+
+router.get("/api/content", async (req, res) => {
+  try {
+    const content = await Content.find();
+    res.json(content);
+  } catch (err) {
+    console.error("Error fetching content:", err);
+    res.status(500).json({ message: "Error fetching content." });
+  }
+});
+
+router.put("/api/content/:id", async (req, res) => {
+  try {
+    const { title, description, type, audience, tags, embedLink } = req.body;
+
+    const updatedContent = await Content.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        type,
+        audience,
+        tags: tags ? tags.split(",") : [],
+        embedLink,
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedContent) {
+      return res.status(404).json({ message: "Content not found." });
+    }
+
+    res.json({ message: "Content updated successfully.", content: updatedContent });
+  } catch (err) {
+    console.error("Error updating content:", err);
+    res.status(500).json({ message: "Error updating content." });
+  }
+});
+
+
+router.delete("/api/content/:id", async (req, res) => {
+  try {
+    const deletedContent = await Content.findByIdAndDelete(req.params.id);
+
+    if (!deletedContent) {
+      return res.status(404).json({ message: "Content not found." });
+    }
+
+    res.json({ message: "Content deleted successfully." });
+  } catch (err) {
+    console.error("Error deleting content:", err);
+    res.status(500).json({ message: "Error deleting content." });
+  }
+});
+
+app.use(express.json());
+app.use(router); // Mount router
 // Start the Server
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
