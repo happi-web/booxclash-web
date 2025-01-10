@@ -46,6 +46,11 @@ const Content = mongoose.model('Content', contentSchema);
 
 module.exports = Content;
 
+
+const path = require('path');
+
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Middleware to authenticate user with token
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
