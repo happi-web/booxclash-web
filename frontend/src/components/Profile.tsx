@@ -1,3 +1,5 @@
+// // frontend/components/Profile.tsx
+
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 
@@ -5,6 +7,7 @@
 //   username: string;
 //   role: string;
 //   profilePicture?: string;
+//   grade?: string;
 // }
 
 // const Profile = () => {
@@ -22,6 +25,7 @@
 //         setProfile(response.data);
 //       } catch (error) {
 //         console.error("Error fetching profile:", error);
+//         setMessage("Failed to load profile.");
 //       }
 //     };
 
@@ -29,8 +33,9 @@
 //   }, []);
 
 //   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = e.target.files?.[0] || null;
-//     setSelectedFile(file);
+//     if (e.target.files && e.target.files.length > 0) {
+//       setSelectedFile(e.target.files[0]);
+//     }
 //   };
 
 //   const uploadProfilePicture = async () => {
@@ -38,12 +43,10 @@
 //       setMessage("Please select a file to upload.");
 //       return;
 //     }
-  
+
 //     const formData = new FormData();
 //     formData.append("profilePicture", selectedFile);
-  
-//     console.log([...formData.entries()]); // Debugging step
-  
+
 //     try {
 //       const token = localStorage.getItem("token");
 //       const response = await axios.put<{ message: string; user: Profile }>(
@@ -52,10 +55,11 @@
 //         {
 //           headers: {
 //             Authorization: `Bearer ${token}`,
+//             "Content-Type": "multipart/form-data", // Important for file uploads
 //           },
 //         }
 //       );
-  
+
 //       setMessage(response.data.message);
 //       setProfile(response.data.user);
 //     } catch (error: any) {
@@ -63,7 +67,6 @@
 //       setMessage(error.response?.data?.message || "Error uploading profile picture.");
 //     }
 //   };
-  
 
 //   if (!profile) return <p>Loading profile...</p>;
 
@@ -77,8 +80,9 @@
 //       />
 //       <p>Username: {profile.username}</p>
 //       <p>Role: {profile.role}</p>
-//       <input type="file" onChange={handleFileChange} />
-//       <button onClick={uploadProfilePicture}>Upload Profile Picture</button>
+//       {profile.grade && <p>Grade: {profile.grade}</p>}  {/* Only show grade if available */}
+//       <input type="file" accept="image/*" onChange={handleFileChange} />
+//       <button onClick={uploadProfilePicture}>Update Profile Picture</button>
 //       {message && <p>{message}</p>}
 //     </div>
 //   );
@@ -93,11 +97,12 @@ interface Profile {
   username: string;
   role: string;
   profilePicture?: string;
+  grade?: string;
 }
 
 const Profile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Store selected file
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -110,6 +115,7 @@ const Profile = () => {
         setProfile(response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
+        setMessage("Failed to load profile.");
       }
     };
 
@@ -139,13 +145,13 @@ const Profile = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // Important for file uploads
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
       setMessage(response.data.message);
-      setProfile(response.data.user);
+      setProfile(response.data.user); // Update profile with new picture
     } catch (error: any) {
       console.error("Error uploading profile picture:", error.response?.data || error.message);
       setMessage(error.response?.data?.message || "Error uploading profile picture.");
@@ -158,12 +164,17 @@ const Profile = () => {
     <div>
       <h1>Profile</h1>
       <img
-        src={profile.profilePicture || "https://via.placeholder.com/150"}
+        src={
+          profile.profilePicture
+            ? `http://localhost:4000/${profile.profilePicture.replace("\\", "/")}`
+            : "https://via.placeholder.com/150"
+        }
         alt="Profile"
         style={{ width: "150px", height: "150px", borderRadius: "50%" }}
       />
       <p>Username: {profile.username}</p>
       <p>Role: {profile.role}</p>
+      {profile.grade && <p>Grade: {profile.grade}</p>}
       <input type="file" accept="image/*" onChange={handleFileChange} />
       <button onClick={uploadProfilePicture}>Update Profile Picture</button>
       {message && <p>{message}</p>}
@@ -172,4 +183,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

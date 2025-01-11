@@ -11,7 +11,7 @@ const NumberHunt: React.FC = () => {
   const [gridNumbers, setGridNumbers] = useState<number[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isNextRound, setIsNextRound] = useState(false);
-  const [isMuted, setIsMuted] = useState(false); // New state for mute functionality
+  const [isMuted, setIsMuted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const backgroundMusic = useRef(new Audio("/booxclash-web/sound/back.mp3"));
@@ -30,9 +30,8 @@ const NumberHunt: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Update volume of all sounds when mute state changes
     const volume = isMuted ? 0 : 1;
-    backgroundMusic.current.volume = isMuted ? 0.1 * volume : 0.1; // Background music at lower volume
+    backgroundMusic.current.volume = isMuted ? 0.1 * volume : 0.1;
     successSound.current.volume = volume;
     wrongSound.current.volume = volume;
     gameOverSound.current.volume = volume;
@@ -55,15 +54,18 @@ const NumberHunt: React.FC = () => {
   };
 
   const resetGame = () => {
+    clearInterval(timerRef.current as NodeJS.Timeout);
+    backgroundMusic.current.pause();
+    backgroundMusic.current.currentTime = 0;
     setScore(0);
-    setTimeLeft(0);
+    setTimeLeft(30);
     setRound(1);
-    if (!isMuted) backgroundMusic.current.play();
     setIsGameOver(false);
     setIsNextRound(false);
     setSelectedNumbers([]);
     setGridNumbers([]);
     setTargetNumber(0);
+    if (!isMuted) backgroundMusic.current.play();
   };
 
   const startRound1 = () => {
@@ -78,16 +80,20 @@ const NumberHunt: React.FC = () => {
     setTargetNumber(target);
   };
 
+
   const checkNumberRound1 = (clickedNumber: number) => {
     if (clickedNumber === targetNumber) {
       if (!isMuted) successSound.current.play();
-      setScore((prev) => prev + 2);
-
-      if (score + 2 >= 20) {
+  
+      const newScore = score + 2; // Calculate the new score
+      setScore(newScore);
+  
+      if (newScore >= 20) {
+        // Check if the new score is enough to proceed to the next round
         if (!isMuted) levelWinSound.current.play();
         proceedToNextRound();
       } else {
-        generateGridRound1();
+        generateGridRound1(); // Generate a new grid for the same round
         resetAndStartTimer();
       }
     } else {
@@ -95,12 +101,15 @@ const NumberHunt: React.FC = () => {
       endGame();
     }
   };
-
+  
   const proceedToNextRound = () => {
     clearInterval(timerRef.current as NodeJS.Timeout);
     setIsNextRound(true);
     setTimeout(() => {
       setIsNextRound(false);
+      setSelectedNumbers([]);
+      setGridNumbers([]);
+      setTargetNumber(0);
       setRound(2);
       startRound2();
     }, 2000);
@@ -133,16 +142,18 @@ const NumberHunt: React.FC = () => {
   };
 
   const checkNumberRound2 = (clickedNumber: number) => {
-    setSelectedNumbers((prev) => [...prev, clickedNumber]);
+    const newSelectedNumbers = [...selectedNumbers, clickedNumber];
+    setSelectedNumbers(newSelectedNumbers);
 
-    if (selectedNumbers.length === 1) {
-      const sum = selectedNumbers[0] + clickedNumber;
+    if (newSelectedNumbers.length === 2) {
+      const sum = newSelectedNumbers[0] + newSelectedNumbers[1];
 
       if (sum === targetNumber) {
         if (!isMuted) successSound.current.play();
-        setScore((prev) => prev + 2);
+        const newScore = score + 2;
+        setScore(newScore);
 
-        if (score + 2 >= 40) {
+        if (newScore >= 40) {
           if (!isMuted) levelWinSound.current.play();
           endGame();
         } else {
@@ -153,6 +164,7 @@ const NumberHunt: React.FC = () => {
         if (!isMuted) wrongSound.current.play();
         endGame();
       }
+
       setSelectedNumbers([]);
     }
   };
