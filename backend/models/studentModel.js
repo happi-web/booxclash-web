@@ -9,8 +9,9 @@ const contentSchema = new mongoose.Schema({
     enum: ['video', 'simulation', 'game', 'vr_ar', 'flashcard'] 
   },
   videoLink: { type: String }, // Only for video type
+  link: { type: String }, // General link for simulation, game, or VR/AR content
   thumbnail: { type: String, required: true },
-  file: { type: String }, // File path for simulation, game, or VR/AR
+  file: { type: String }, // File path for flashcards
 });
 
 // Create and export the Content model

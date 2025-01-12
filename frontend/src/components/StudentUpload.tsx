@@ -1,20 +1,20 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import  "./css/lessons.css";
 
-// Interface for content types
 interface Content {
   _id: string;
   title: string;
   type: "video" | "simulation" | "game" | "vr_ar" | "flashcard";
-  videoLink?: string;
+  videoLink?: string; // General link for non-flashcard types
   thumbnail: string;
-  file?: string; // Could be a file for simulation/game/vr/ar
+  file?: string; // File for flashcards
 }
 
 const StudentUpload = () => {
   const [contentData, setContentData] = useState<Content>({
     _id: "",
     title: "",
-    type: "video", // Default type is video
+    type: "video", // Default type
     videoLink: "",
     thumbnail: "",
     file: "",
@@ -22,7 +22,6 @@ const StudentUpload = () => {
   const [uploadedContent, setUploadedContent] = useState<Content[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Fetch uploaded content from backend
   useEffect(() => {
     fetchContent();
   }, []);
@@ -41,22 +40,19 @@ const StudentUpload = () => {
     }
   };
 
-  // Handle content type change
-  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setContentData((prev) => ({ ...prev, type: value as "video" | "simulation" | "game" | "vr_ar" | "flashcard" }));
-  };
-
-  // Handle input change for fields like title, video link, etc.
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setContentData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle file uploads for thumbnail and files for simulations, games, etc.
+  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    setContentData((prev) => ({ ...prev, type: value as Content["type"] }));
+  };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
-    if (files) {
+    if (files && files[0]) {
       setContentData((prev) => ({ ...prev, [name]: files[0] }));
     }
   };
@@ -64,10 +60,16 @@ const StudentUpload = () => {
   // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
     const formData = new FormData();
     formData.append("title", contentData.title);
     formData.append("type", contentData.type);
-    if (contentData.videoLink) formData.append("videoLink", contentData.videoLink);
+
+    // Include videoLink only if the content type is video
+    if (contentData.type === 'video' && contentData.videoLink) {
+      formData.append("videoLink", contentData.videoLink);
+    }
+    
     if (contentData.thumbnail) formData.append("thumbnail", contentData.thumbnail);
     if (contentData.file) formData.append("file", contentData.file);
 
@@ -93,7 +95,7 @@ const StudentUpload = () => {
       setContentData({
         _id: "",
         title: "",
-        type: "video",
+        type: "video", // Reset to default type
         videoLink: "",
         thumbnail: "",
         file: "",
@@ -107,11 +109,11 @@ const StudentUpload = () => {
 
   return (
     <div>
-      <h1>Upload Content (Video, Simulation, Game, VR/AR, Flashcards)</h1>
+      <h1>Upload Content</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Content Type</label>
-          <select name="type" onChange={handleContentTypeChange} value={contentData.type}>
+          <select name="type" value={contentData.type} onChange={handleContentTypeChange}>
             <option value="video">Video</option>
             <option value="simulation">Simulation</option>
             <option value="game">Game</option>
@@ -131,27 +133,40 @@ const StudentUpload = () => {
           />
         </div>
 
-        {contentData.type === "video" && (
+        {/* Link for all types except flashcards */}
+        {contentData.type !== "flashcard" && (
           <div>
-            <label>Embed Video Link</label>
+            <label>Video Link</label>
             <input
               type="text"
-              name="videoLink"
+              name="videoLink" // Use 'videoLink' to correctly bind the state
               value={contentData.videoLink}
               onChange={handleInputChange}
+              required={contentData.type === 'video'} // Make it required only for video type
             />
           </div>
         )}
 
         <div>
           <label>Upload Thumbnail</label>
-          <input type="file" name="thumbnail" onChange={handleFileChange} required />
+          <input
+            type="file"
+            name="thumbnail"
+            onChange={handleFileChange}
+            required
+          />
         </div>
 
-        {contentData.type !== "video" && (
+        {/* File upload only for flashcards */}
+        {contentData.type === "flashcard" && (
           <div>
-            <label>Upload {contentData.type.charAt(0).toUpperCase() + contentData.type.slice(1)}</label>
-            <input type="file" name="file" onChange={handleFileChange} required />
+            <label>Upload Flashcard File</label>
+            <input
+              type="file"
+              name="file"
+              onChange={handleFileChange}
+              required
+            />
           </div>
         )}
 
@@ -161,23 +176,31 @@ const StudentUpload = () => {
       </form>
 
       <h2>Uploaded Content</h2>
-      <ul>
+      <ul className="lesson-plan-row">
         {uploadedContent.map((content) => (
-          <li key={content._id}>
+          <li key={content._id} className="lesson-plan-item">
             <h3>{content.title}</h3>
-            {content.type === "video" && (
-              <iframe
-                width="560"
-                height="315"
-                src={content.videoLink}
-                title={content.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+            {content.videoLink && (
+              <p>
+                <strong>Link:</strong>{" "}
+                <a href={content.videoLink} target="_blank" rel="noopener noreferrer">
+                  {content.videoLink}
+                </a>
+              </p>
             )}
-            <img src={content.thumbnail} alt={content.title} width="200" />
-            {content.type !== "video" && <p>File: {content.file}</p>}
+            <img
+              src={`http://localhost:4000${content.thumbnail}`}
+              alt={content.title}
+              width="200"
+            />
+            {content.type === "flashcard" && content.file && (
+              <p>
+                <strong>Flashcard File:</strong>{" "}
+                <a href={`http://localhost:4000${content.file}`} download>
+                  Download
+                </a>
+              </p>
+            )}
           </li>
         ))}
       </ul>

@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
+import  "./css/lessons.css";
 
 interface LessonPlan {
   _id: string; // Unique identifier (_id is still used in the backend for deletion)
@@ -85,12 +86,12 @@ function TeacherUpload() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formDataToUpload = new FormData();
-
+  
     // Append flashcard files to the form data (images for flashcards)
     formData.flashcards.forEach((file) => {
       formDataToUpload.append("flashcards", file);  // Ensure field name is "flashcards"
     });
-
+  
     // Append other form data (no change in lesson data)
     formDataToUpload.append("gradeLevel", formData.gradeLevel);
     formDataToUpload.append("subject", formData.subject);    
@@ -108,7 +109,7 @@ function TeacherUpload() {
     formDataToUpload.append("quizLink", formData.quizLink);
     formDataToUpload.append("gamesLink", formData.gamesLink);
     formDataToUpload.append("conclusion", formData.conclusion);
-
+  
     try {
       setIsUploading(true);
       const response = await fetch("http://localhost:4000/api/upload-lesson", {
@@ -118,15 +119,19 @@ function TeacherUpload() {
         },
         body: formDataToUpload,
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         alert(`Upload failed: ${errorText}`);
         return;
       }
-
+  
       const result = await response.json();
       console.log(result);
+  
+      // After successful upload, clear the form and reset state
+      setFormData(initialFormData); // Reset the form data
+      setFlashcardURLs([]); // Clear flashcard previews
       setIsUploading(false);
       fetchLessonPlans(); // Reload lesson plans after a successful upload
     } catch (error) {
@@ -135,6 +140,7 @@ function TeacherUpload() {
       alert("An error occurred while uploading the lesson plan.");
     }
   };
+  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -190,9 +196,9 @@ function TeacherUpload() {
   );
 
   const renderLessonPlans = () => (
-    <ul>
-      {lessonPlans.map((plan, ) => (
-        <li key={plan._id}>
+    <ul className="lesson-plan-row">
+      {lessonPlans.map((plan) => (
+        <li key={plan._id} className="lesson-plan-item">
           <h2>{plan.lesson}</h2>  {/* Display the lesson name */}
           <p><strong>Topic:</strong> {plan.topic}</p>
           <p><strong>Grade Level:</strong> {plan.gradeLevel}</p>
@@ -213,9 +219,8 @@ function TeacherUpload() {
             {plan.flashcards.length ? (
               plan.flashcards.map((flashcard, index) => (
                 <li key={index}>
-                  {/* Check if flashcard is a URL or File */}
                   <img
-                    src={typeof flashcard === 'string' ? flashcard : URL.createObjectURL(flashcard)}
+                    src={`http://localhost:4000/${flashcard}`}  // Assuming your server serves images from "uploads/" directory
                     alt={`Flashcard ${index + 1}`}
                     width="100"
                   />
@@ -234,9 +239,9 @@ function TeacherUpload() {
   
 
   return (
-    <div>
+    <div className="container">
       <h1>Upload Lesson Plan with Flashcards</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="lesson-plan-item">
         {Object.entries(formData).map(([key, value]) => {
           if (key === "flashcards") return null;
 
