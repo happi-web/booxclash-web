@@ -8,6 +8,8 @@ const lessonPlanRoutes = require('./routes/lessonPlanRoutes');
 const studentUploadRoutes = require('./routes/studentUploadRoutes');
 const studentProfileRoutes = require('./routes/studentsProfileRoutes');
 const contentRoutes = require('./routes/contentRoutes');
+const videosRoute = require('./routes/videos'); 
+
 require('dotenv').config();
 
 // Initialize app
@@ -29,6 +31,7 @@ app.use(lessonPlanRoutes);
 app.use('/api', studentUploadRoutes); 
 app.use('/api', studentProfileRoutes);
 app.use('/api', contentRoutes);
+app.use('/api', videosRoute);
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

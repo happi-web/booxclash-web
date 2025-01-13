@@ -21,6 +21,7 @@ import UserManagement from './components/UserManagement';
 import ContentUpload from './components/ContentUpload';
 import Analytics from './components/Analytics';
 import Settings from './components/Settings';
+import Games from './components/students/components/Games';
 
 // Define the user type with only username and token
 interface User {
@@ -47,6 +48,7 @@ const Main: React.FC = () => {
         <Route path="/scienceGames" element={<ScienceGames />} />
         <Route path="/knockout" element={<Knockout />} />
         <Route path="/numberHunt" element={<NumberHunt />} />
+        <Route path="/game" element={<Games />} />
 
         <Route path="/signup" element={<SignUp setUser={setUser} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />

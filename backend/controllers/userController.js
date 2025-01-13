@@ -62,4 +62,6 @@ const getProfile = async (req, res) => {
   }
 };
 
+
+
 module.exports = { getUsers, getProfile, updateProfilePicture };

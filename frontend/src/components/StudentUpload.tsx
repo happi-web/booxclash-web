@@ -1,21 +1,21 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import  "./css/lessons.css";
+import "./css/lessons.css";
 
 interface Content {
   _id: string;
   title: string;
   type: "video" | "simulation" | "game" | "vr_ar" | "flashcard";
-  videoLink?: string; // General link for non-flashcard types
-  thumbnail: string;
-  file?: string; // File for flashcards
+  link?: string;
+  thumbnail: string | File;
+  file?: string | File;
 }
 
 const StudentUpload = () => {
   const [contentData, setContentData] = useState<Content>({
     _id: "",
     title: "",
-    type: "video", // Default type
-    videoLink: "",
+    type: "video",
+    link: "",
     thumbnail: "",
     file: "",
   });
@@ -57,24 +57,33 @@ const StudentUpload = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("title", contentData.title);
     formData.append("type", contentData.type);
 
-    // Include videoLink only if the content type is video
-    if (contentData.type === 'video' && contentData.videoLink) {
-      formData.append("videoLink", contentData.videoLink);
+    // Append link for all applicable types
+    if (contentData.link) {
+      formData.append("link", contentData.link);
     }
-    
-    if (contentData.thumbnail) formData.append("thumbnail", contentData.thumbnail);
-    if (contentData.file) formData.append("file", contentData.file);
+
+    // Append thumbnail
+    if (contentData.thumbnail instanceof File) {
+      formData.append("thumbnail", contentData.thumbnail);
+    } else {
+      console.error("Thumbnail is not a File");
+    }
+
+    // Append file for flashcards
+    if (contentData.type === "flashcard" && contentData.file instanceof File) {
+      formData.append("file", contentData.file);
+    }
 
     try {
       setIsUploading(true);
+
       const response = await fetch("http://localhost:4000/api/upload-content", {
         method: "POST",
         headers: {
@@ -90,16 +99,18 @@ const StudentUpload = () => {
       }
 
       const result = await response.json();
-      setUploadedContent((prev) => [...prev, result]); // Update the content list
+      setUploadedContent((prev) => [...prev, result]);
       setIsUploading(false);
+
+      // Reset form
       setContentData({
         _id: "",
         title: "",
-        type: "video", // Reset to default type
-        videoLink: "",
+        type: "video",
+        link: "",
         thumbnail: "",
         file: "",
-      }); // Reset the form
+      });
     } catch (error) {
       setIsUploading(false);
       console.error("Upload failed:", error);
@@ -133,16 +144,15 @@ const StudentUpload = () => {
           />
         </div>
 
-        {/* Link for all types except flashcards */}
         {contentData.type !== "flashcard" && (
           <div>
-            <label>Video Link</label>
+            <label>Content Link</label>
             <input
               type="text"
-              name="videoLink" // Use 'videoLink' to correctly bind the state
-              value={contentData.videoLink}
+              name="link"
+              value={contentData.link || ""}
               onChange={handleInputChange}
-              required={contentData.type === 'video'} // Make it required only for video type
+              required
             />
           </div>
         )}
@@ -157,7 +167,6 @@ const StudentUpload = () => {
           />
         </div>
 
-        {/* File upload only for flashcards */}
         {contentData.type === "flashcard" && (
           <div>
             <label>Upload Flashcard File</label>
@@ -180,11 +189,11 @@ const StudentUpload = () => {
         {uploadedContent.map((content) => (
           <li key={content._id} className="lesson-plan-item">
             <h3>{content.title}</h3>
-            {content.videoLink && (
+            {content.link && (
               <p>
                 <strong>Link:</strong>{" "}
-                <a href={content.videoLink} target="_blank" rel="noopener noreferrer">
-                  {content.videoLink}
+                <a href={content.link} target="_blank" rel="noopener noreferrer">
+                  {content.link}
                 </a>
               </p>
             )}
@@ -209,3 +218,5 @@ const StudentUpload = () => {
 };
 
 export default StudentUpload;
+
+
