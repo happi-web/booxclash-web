@@ -114,7 +114,7 @@ const StudentUpload = () => {
 
   return (
     <div>
-      <h1>Upload Content (Video, Simulation, Game, VR/AR)</h1>
+      <h1>Upload Content for Students</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Content Type</label>
@@ -122,7 +122,6 @@ const StudentUpload = () => {
             <option value="video">Video</option>
             <option value="simulation">Simulation</option>
             <option value="game">Game</option>
-            <option value="vr_ar">VR/AR</option>
           </select>
         </div>
 

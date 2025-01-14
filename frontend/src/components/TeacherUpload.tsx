@@ -1,16 +1,16 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import  "./css/lessons.css";
+import "./css/lessons.css";
 
 interface LessonPlan {
-  _id: string; // Unique identifier (_id is still used in the backend for deletion)
   gradeLevel: string;
   subject: string;
-  topic: string; // Topic field (not unique, just for additional information)  
-  lesson: string; // Use 'lesson' as the unique identifier
+  topic: string; // Topic field
+  lesson: string; // Lesson as the unique identifier
   duration: string;
   learningObjectives: string;
   materialsNeeded: string;
   introduction: string;
+  imageUrl?: string; 
   lessonPresentation: string;
   interactiveActivity: string;
   questionAnswerSession: string;
@@ -19,15 +19,13 @@ interface LessonPlan {
   quizLink: string;
   gamesLink: string;
   conclusion: string;
-  flashcards: File[]; // Flashcard files (images)
 }
 
 const initialFormData: LessonPlan = {
-  _id: "",  // Keep _id but not used in upload
   gradeLevel: "5",
-  subject: "Science",  
-  topic: "The Water Cycle",  // Topic is added for more details
-  lesson: "Water Cycle Lesson",  // Lesson is the unique identifier now
+  subject: "Science",
+  topic: "The Water Cycle",  // Topic for more details
+  lesson: "Water Cycle Lesson",  // Lesson as unique identifier
   duration: "60 minutes",
   learningObjectives: "",
   materialsNeeded: "",
@@ -40,14 +38,12 @@ const initialFormData: LessonPlan = {
   quizLink: "",
   gamesLink: "",
   conclusion: "",
-  flashcards: [], // Initialize flashcards
 };
 
 function TeacherUpload() {
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
   const [formData, setFormData] = useState<LessonPlan>(initialFormData);
-  const [isUploading, setIsUploading] = useState(false); // Use state for uploading status
-  const [flashcardURLs, setFlashcardURLs] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchLessonPlans();
@@ -68,35 +64,19 @@ function TeacherUpload() {
       const data: LessonPlan[] = await response.json();
       setLessonPlans(data);
     } catch (error) {
-      handleError(error, "Error fetching lesson plans");
-    }
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const fileURLs = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      setFlashcardURLs(fileURLs);
-      setFormData((prev) => ({ ...prev, flashcards: Array.from(files) }));
+      console.error("Error fetching lesson plans", error);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formDataToUpload = new FormData();
-  
-    // Append flashcard files to the form data (images for flashcards)
-    formData.flashcards.forEach((file) => {
-      formDataToUpload.append("flashcards", file);  // Ensure field name is "flashcards"
-    });
-  
-    // Append other form data (no change in lesson data)
+
+    // Append other form data (lesson data)
     formDataToUpload.append("gradeLevel", formData.gradeLevel);
-    formDataToUpload.append("subject", formData.subject);    
-    formDataToUpload.append("topic", formData.topic);    // Send topic as additional information
-    formDataToUpload.append("lesson", formData.lesson);  // Send lesson as the unique identifier
+    formDataToUpload.append("subject", formData.subject);
+    formDataToUpload.append("topic", formData.topic);
+    formDataToUpload.append("lesson", formData.lesson);
     formDataToUpload.append("duration", formData.duration);
     formDataToUpload.append("learningObjectives", formData.learningObjectives);
     formDataToUpload.append("materialsNeeded", formData.materialsNeeded);
@@ -109,7 +89,7 @@ function TeacherUpload() {
     formDataToUpload.append("quizLink", formData.quizLink);
     formDataToUpload.append("gamesLink", formData.gamesLink);
     formDataToUpload.append("conclusion", formData.conclusion);
-  
+
     try {
       setIsUploading(true);
       const response = await fetch("http://localhost:4000/api/upload-lesson", {
@@ -119,47 +99,35 @@ function TeacherUpload() {
         },
         body: formDataToUpload,
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         alert(`Upload failed: ${errorText}`);
         return;
       }
-  
+
       const result = await response.json();
       console.log(result);
-  
-      // After successful upload, clear the form and reset state
-      setFormData(initialFormData); // Reset the form data
-      setFlashcardURLs([]); // Clear flashcard previews
+
+      // After successful upload, reset the form
+      setFormData(initialFormData);
       setIsUploading(false);
-      fetchLessonPlans(); // Reload lesson plans after a successful upload
+      fetchLessonPlans(); // Reload lesson plans after upload
     } catch (error) {
       setIsUploading(false);
       console.error("Upload error:", error);
       alert("An error occurred while uploading the lesson plan.");
     }
   };
-  
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleError = (error: unknown, message: string) => {
-    if (error instanceof Error) {
-      console.error(message, error.message);
-      alert(`${message}: ${error.message}`);
-    } else {
-      console.error(message, error);
-      alert("An unexpected error occurred.");
-    }
-  };
-
-  const handleDelete = async (plan: LessonPlan) => {
+  const handleDelete = async (lesson: string) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/lessons/${plan.lesson}`, {  // Delete by lesson
+      const response = await fetch(`http://localhost:4000/api/lessons/${lesson}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -173,33 +141,17 @@ function TeacherUpload() {
       }
 
       alert("Lesson Plan deleted successfully!");
-      setLessonPlans((prev) => prev.filter((p) => p.lesson !== plan.lesson)); // Filter by lesson
+      setLessonPlans((prev) => prev.filter((plan) => plan.lesson !== lesson));
     } catch (error) {
-      handleError(error, "Error during deletion");
+      console.error("Error during deletion", error);
     }
   };
-
-  // Render flashcards with URLs
-  const renderFlashcards = () => (
-    <ul>
-      {flashcardURLs.length > 0 ? (
-        flashcardURLs.map((url, index) => (
-          <li key={index}>
-            <img src={url} alt={`Flashcard ${index + 1}`} width="100" />
-            <p>Flashcard {index + 1}</p>
-          </li>
-        ))
-      ) : (
-        <p>No flashcards uploaded yet.</p>
-      )}
-    </ul>
-  );
 
   const renderLessonPlans = () => (
     <ul className="lesson-plan-row">
       {lessonPlans.map((plan) => (
-        <li key={plan._id} className="lesson-plan-item">
-          <h2>{plan.lesson}</h2>  {/* Display the lesson name */}
+        <li key={plan.lesson} className="lesson-plan-item">
+          <h2>{plan.lesson}</h2>
           <p><strong>Topic:</strong> {plan.topic}</p>
           <p><strong>Grade Level:</strong> {plan.gradeLevel}</p>
           <p><strong>Subject:</strong> {plan.subject}</p>
@@ -214,73 +166,59 @@ function TeacherUpload() {
           <p><strong>Game Description:</strong> {plan.gameDescription}</p>
           <p><strong>Quiz Link:</strong> <a href={plan.quizLink} target="_blank" rel="noopener noreferrer">{plan.quizLink}</a></p>
           <p><strong>Conclusion:</strong> {plan.conclusion}</p>
-          <p><strong>Flashcards:</strong></p>
-          <ul>
-            {plan.flashcards.length ? (
-              plan.flashcards.map((flashcard, index) => (
-                <li key={index}>
-                  <img
-                    src={`http://localhost:4000/${flashcard}`}  // Assuming your server serves images from "uploads/" directory
-                    alt={`Flashcard ${index + 1}`}
-                    width="100"
-                  />
-                  <p>Flashcard {index + 1}</p>
-                </li>
-              ))
-            ) : (
-              <p>No flashcards uploaded for this lesson plan.</p>
-            )}
-          </ul>
-          <button onClick={() => handleDelete(plan)}>Delete</button>
+          <button onClick={() => handleDelete(plan.lesson)}>Delete</button>
         </li>
       ))}
     </ul>
   );
-  
 
   return (
     <div className="container">
-      <h1>Upload Lesson Plan with Flashcards</h1>
+      <h1>Upload Lesson Plan</h1>
       <form onSubmit={handleSubmit} className="lesson-plan-item">
-        {Object.entries(formData).map(([key, value]) => {
-          if (key === "flashcards") return null;
-
-          const label = key.replace(/([A-Z])/g, " $1").toUpperCase();
-          return (
-            <div key={key}>
-              <label>{label}</label>
-              {key === "lesson" || key === "topic" ? (
-                <input
-                  type="text"
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  required
-                />
-              ) : key.includes("Link") ? (
-                <input
-                  type="url"
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  required
-                />
-              ) : (
-                <textarea
-                  name={key}
-                  value={value}
-                  onChange={handleChange}
-                  required
-                />
-              )}
-            </div>
-          );
-        })}
         <div>
-          <label>FLASHCARDS (Upload Images)</label>
-          <input type="file" accept="image/*" multiple onChange={handleFileChange} />
-          {renderFlashcards()}
+          <label>Grade Level</label>
+          <select name="gradeLevel" value={formData.gradeLevel} onChange={handleChange} required>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
         </div>
+
+        <div>
+          <label>Subject</label>
+          <select name="subject" value={formData.subject} onChange={handleChange} required>
+            <option value="Science">Science</option>
+            <option value="Math">Math</option>
+          </select>
+        </div>
+
+        {["topic", "lesson", "duration", "learningObjectives", "materialsNeeded", "introduction", "lessonPresentation", "interactiveActivity", "questionAnswerSession", "videoLink", "gameDescription", "quizLink", "gamesLink", "conclusion"].map((field) => (
+          <div key={field}>
+            <label>{field.replace(/([A-Z])/g, " $1").toUpperCase()}</label>
+            {field.includes("Link") ? (
+              <input
+                type="url"
+                name={field}
+                value={formData[field as keyof LessonPlan]}
+                onChange={handleChange}
+                required
+              />
+            ) : (
+              <textarea
+                name={field}
+                value={formData[field as keyof LessonPlan]}
+                onChange={handleChange}
+                required
+              />
+            )}
+          </div>
+        ))}
         <button type="submit" disabled={isUploading}>
           {isUploading ? "Uploading..." : "Upload Lesson Plan"}
         </button>
