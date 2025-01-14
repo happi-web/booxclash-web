@@ -18,11 +18,8 @@ type SidebarProps = {
           <li onClick={() => onSelect('Games')} style={{ cursor: 'pointer', margin: '10px 0' }}>
             Games
           </li>
-          <li onClick={() => onSelect('VRAR')} style={{ cursor: 'pointer', margin: '10px 0' }}>
-            VR/AR
-          </li>
-          <li onClick={() => onSelect('FlashCards')} style={{ cursor: 'pointer', margin: '10px 0' }}>
-            FlashCards
+          <li onClick={() => onSelect('Science Virtual Lab')} style={{ cursor: 'pointer', margin: '10px 0' }}>
+            Science Virtual Lab
           </li>
         </ul>
       </div>

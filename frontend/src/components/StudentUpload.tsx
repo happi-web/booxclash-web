@@ -4,24 +4,26 @@ import "./css/lessons.css";
 interface Content {
   _id: string;
   title: string;
-  type: "video" | "simulation" | "game" | "vr_ar" | "flashcard";
-  link?: string;
-  thumbnail: string | File;
-  file?: string | File;
+  type: "video" | "simulation" | "game" | "vr_ar";
+  link?: string; // For video and simulation
+  thumbnail?: string; // For game and VR/AR
+  component?: string; // For game (e.g., NumberHunt)
 }
 
 const StudentUpload = () => {
   const [contentData, setContentData] = useState<Content>({
     _id: "",
     title: "",
-    type: "video",
+    type: "video", // Default type is video
     link: "",
     thumbnail: "",
-    file: "",
+    component: "",
   });
+
   const [uploadedContent, setUploadedContent] = useState<Content[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Fetch uploaded content from backend
   useEffect(() => {
     fetchContent();
   }, []);
@@ -40,50 +42,44 @@ const StudentUpload = () => {
     }
   };
 
+  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    setContentData((prev) => ({
+      ...prev,
+      type: value as Content["type"],
+      link: "",
+      thumbnail: "",
+      component: "",
+    }));
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setContentData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setContentData((prev) => ({ ...prev, type: value as Content["type"] }));
-  };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
-    if (files && files[0]) {
+    if (files) {
       setContentData((prev) => ({ ...prev, [name]: files[0] }));
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("title", contentData.title);
     formData.append("type", contentData.type);
 
-    // Append link for all applicable types
-    if (contentData.link) {
-      formData.append("link", contentData.link);
-    }
-
-    // Append thumbnail
-    if (contentData.thumbnail instanceof File) {
-      formData.append("thumbnail", contentData.thumbnail);
-    } else {
-      console.error("Thumbnail is not a File");
-    }
-
-    // Append file for flashcards
-    if (contentData.type === "flashcard" && contentData.file instanceof File) {
-      formData.append("file", contentData.file);
+    if (contentData.type === "video" || contentData.type === "simulation") {
+      formData.append("link", contentData.link || "");
+    } else if (contentData.type === "game") {
+      formData.append("thumbnail", contentData.thumbnail || "");
+      formData.append("component", contentData.component || "");
     }
 
     try {
       setIsUploading(true);
-
       const response = await fetch("http://localhost:4000/api/upload-content", {
         method: "POST",
         headers: {
@@ -101,15 +97,13 @@ const StudentUpload = () => {
       const result = await response.json();
       setUploadedContent((prev) => [...prev, result]);
       setIsUploading(false);
-
-      // Reset form
       setContentData({
         _id: "",
         title: "",
         type: "video",
         link: "",
         thumbnail: "",
-        file: "",
+        component: "",
       });
     } catch (error) {
       setIsUploading(false);
@@ -120,16 +114,15 @@ const StudentUpload = () => {
 
   return (
     <div>
-      <h1>Upload Content</h1>
+      <h1>Upload Content (Video, Simulation, Game, VR/AR)</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Content Type</label>
-          <select name="type" value={contentData.type} onChange={handleContentTypeChange}>
+          <select name="type" onChange={handleContentTypeChange} value={contentData.type}>
             <option value="video">Video</option>
             <option value="simulation">Simulation</option>
             <option value="game">Game</option>
             <option value="vr_ar">VR/AR</option>
-            <option value="flashcard">Flashcard</option>
           </select>
         </div>
 
@@ -144,39 +137,39 @@ const StudentUpload = () => {
           />
         </div>
 
-        {contentData.type !== "flashcard" && (
+        {/* Link input for video and simulation */}
+        {(contentData.type === "video" || contentData.type === "simulation") && (
           <div>
-            <label>Content Link</label>
+            <label>Link</label>
             <input
               type="text"
               name="link"
-              value={contentData.link || ""}
+              value={contentData.link}
               onChange={handleInputChange}
               required
             />
           </div>
         )}
 
-        <div>
-          <label>Upload Thumbnail</label>
-          <input
-            type="file"
-            name="thumbnail"
-            onChange={handleFileChange}
-            required
-          />
-        </div>
-
-        {contentData.type === "flashcard" && (
-          <div>
-            <label>Upload Flashcard File</label>
-            <input
-              type="file"
-              name="file"
-              onChange={handleFileChange}
-              required
-            />
-          </div>
+        {/* Thumbnail and component for games */}
+        {contentData.type === "game" && (
+          <>
+            <div>
+              <label>Upload Thumbnail</label>
+              <input type="file" name="thumbnail" onChange={handleFileChange} required />
+            </div>
+            <div>
+              <label>Game Component</label>
+              <input
+                type="text"
+                name="component"
+                value={contentData.component}
+                onChange={handleInputChange}
+                placeholder="e.g., NumberHunt"
+                required
+              />
+            </div>
+          </>
         )}
 
         <button type="submit" disabled={isUploading}>
@@ -185,30 +178,27 @@ const StudentUpload = () => {
       </form>
 
       <h2>Uploaded Content</h2>
-      <ul className="lesson-plan-row">
+      <ul>
         {uploadedContent.map((content) => (
-          <li key={content._id} className="lesson-plan-item">
+          <li key={content._id}>
             <h3>{content.title}</h3>
             {content.link && (
               <p>
-                <strong>Link:</strong>{" "}
+                Link:{" "}
                 <a href={content.link} target="_blank" rel="noopener noreferrer">
                   {content.link}
                 </a>
               </p>
             )}
-            <img
-              src={`http://localhost:4000${content.thumbnail}`}
-              alt={content.title}
-              width="200"
-            />
-            {content.type === "flashcard" && content.file && (
-              <p>
-                <strong>Flashcard File:</strong>{" "}
-                <a href={`http://localhost:4000${content.file}`} download>
-                  Download
-                </a>
-              </p>
+            {content.type === "game" && (
+              <>
+                <p>Component: {content.component}</p>
+                <img
+                  src={`http://localhost:4000${content.thumbnail}`}
+                  alt={content.title}
+                  width="200"
+                />
+              </>
             )}
           </li>
         ))}
@@ -218,5 +208,3 @@ const StudentUpload = () => {
 };
 
 export default StudentUpload;
-
-

@@ -25,8 +25,19 @@ const Videos = () => {
   }, []);
 
   const getYouTubeEmbedLink = (url: string) => {
-    const videoId = url.split("v=")[1] || url.split("/").pop();
-    return `https://www.youtube.com/embed/${videoId}`;
+    if (!url) {
+      return ''; // Return an empty string if the URL is not provided
+    }
+
+    let videoId = '';
+    const regex = /(?:youtube\.com\/(?:[^\/\n\s]*\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+
+    if (match && match[1]) {
+      videoId = match[1]; // Extract video ID
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : ''; // Return the embed link or an empty string if not valid
   };
 
   if (loading) {

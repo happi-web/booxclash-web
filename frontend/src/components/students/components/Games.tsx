@@ -45,7 +45,7 @@ const Games = () => {
               <h3>{game.title}</h3>
               <button
                 onClick={() => {
-                  window.open(game.link, '_blank');
+                  window.open(game.component, '_blank');
                 }}
               >
                 Play Game

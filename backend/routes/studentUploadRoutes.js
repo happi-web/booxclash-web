@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const contentController = require('../controllers/studentContentController'); // Import controller functions
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel'); // Import the User model
+const User = require('../models/studentModel'); // Import the User model
 
 const router = express.Router();
 

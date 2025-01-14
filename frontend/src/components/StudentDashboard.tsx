@@ -3,8 +3,7 @@ import Profile from './Profile';
 import Videos from './students/components/Videos';
 import Simulations from './students/components/Simulations';
 import Games from './students/components/Games';
-import FlashCards from './students/components/FlashCards';
-import VRAR from './students/components/VR-AR';
+import ScienceVirtualLab from './students/components/ScienceVirtualLab';
 import StudentSideBar from './StudentSideBar';
 import NavBar from './NavBar';
 
@@ -23,10 +22,8 @@ const StudentDashboard = () => {
         return <Simulations />;
       case 'Games':
         return <Games />;
-      case 'FlashCards':
-        return <FlashCards />;
-      case 'VRAR':
-          return <VRAR />;
+      case 'Science Virtual Lab':
+        return <ScienceVirtualLab />;
       default:
         return <Profile />;
     }

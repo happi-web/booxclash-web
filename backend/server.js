@@ -34,7 +34,7 @@ app.use('/api', contentRoutes);
 app.use('/api', videosRoute);
 
 // Serve static files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start the server
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

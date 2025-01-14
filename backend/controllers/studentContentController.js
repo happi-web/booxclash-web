@@ -3,7 +3,7 @@ const Content = require("../models/studentModel"); // Import the Content model
 // Controller function to upload content
 const uploadContent = async (req, res) => {
   try {
-    const { title, type, link } = req.body; // Extract fields from request body
+    const { title, type, link, component } = req.body; // Extract fields from request body
     const thumbnail = req.files?.thumbnail
       ? `/uploads/${req.files.thumbnail[0].filename}`
       : null;
@@ -11,13 +11,13 @@ const uploadContent = async (req, res) => {
       ? `/uploads/${req.files.file[0].filename}`
       : null;
 
-    // Create new content object
+    // Create new content object based on type
     const newContent = new Content({
       title,
       type,
-      link, // Save the provided link for all applicable types
-      thumbnail,
-      file,
+      link, // Save the provided link for video, simulation, etc.
+      thumbnail, // Only for game and vr_ar
+      component, // Only for game
     });
 
     // Save content to database
