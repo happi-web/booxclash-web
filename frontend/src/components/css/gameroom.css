@@ -118,7 +118,15 @@ text-shadow:
 .leaderboard ul li{
   list-style: none;
   margin: 10px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
+  text-align: left;
+  font-weight: bolder;
+}
+
+.leaderboard ul li span{
+  margin: 5px;
+  font-size: 0.7rem;
+  text-align: left;
 }
 
 .battle-ring
@@ -259,6 +267,7 @@ text-shadow:
   text-align: center;
   color: var(--textColor);
 }
+
 .pod img
 {
   width: 60%;
@@ -283,13 +292,6 @@ text-shadow:
   margin-bottom: 10px;
   transition: width 0.5s;
 }
-.details{
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  padding-left: 10px;
-}
-
 
 /* General adjustments for better content fitting */
 .pod-left > .pod {
@@ -316,14 +318,14 @@ text-shadow:
 
 .details {
   flex: 1;
-  text-align: center;
+  text-align: left;
   padding: 5px;
   gap: 5px;
 }
 
 .details span {
   display: inline-block;
-  text-align: center;
+  text-align: left;
 }
 
 /* Add mobile responsiveness */
