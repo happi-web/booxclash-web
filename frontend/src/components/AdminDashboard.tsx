@@ -5,6 +5,7 @@ import Profile from './Profile';
 import Settings from './Settings';
 import Sidebar from './Sidebar';
 import UserManagement from './UserManagement';
+import NavBar from './NavBar';
 
 const AdminDashboard = () => {
   // State to track which component to display
@@ -29,12 +30,16 @@ const AdminDashboard = () => {
   };
 
   return (
+    <>
+    <NavBar/>
     <div className="dashboard" style={{ display: 'flex' }}>
       <Sidebar onSelect={setActiveComponent} />
       <div style={{ flex: 1, padding: '20px' }}>
         {renderComponent()}
       </div>
     </div>
+    </>
+
   );
 };
 

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Circulatory System Simulation</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.simulation-area {
+    position: relative;
+    height: 200px;
+    width: 300px;
+    border: 3px solid #333;
+    background-color: #fff;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.heart {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.blood-flow {
+    position: absolute;
+    top: 50%;
+    left: 15%;
+    width: 60px;
+    height: 10px;
+    background-color: red;
+    border-radius: 5px;
+    transform: translateY(-50%);
+    transition: all 0.1s linear;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+label {
+    font-size: 16px;
+}
+
+input {
+    margin-left: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Circulatory System Simulation</h1>
+        <div class="simulation-area">
+            <div id="heart" class="heart"></div>
+            <div id="blood-flow" class="blood-flow"></div>
+        </div>
+        <div class="controls">
+            <label for="speed">Blood Flow Speed:</label>
+            <input type="range" id="speed" min="1" max="10" value="5">
+        </div>
+    </div>
+
+    <script >
+        const bloodFlow = document.getElementById('blood-flow');
+const speedControl = document.getElementById('speed');
+
+// Function to animate the blood flow based on speed
+function updateBloodFlowSpeed() {
+    const speed = parseInt(speedControl.value);
+    const animationDuration = 11 - speed; // Decrease duration as speed increases
+    bloodFlow.style.transitionDuration = `${animationDuration}s`;
+    bloodFlow.style.left = `${50 + (speed * 5)}%`; // Move the blood flow based on speed
+}
+
+// Initial update of blood flow speed
+updateBloodFlowSpeed();
+
+// Event listener to adjust the blood flow speed
+speedControl.addEventListener('input', updateBloodFlowSpeed);
+
+// Simulate the blood moving from the heart to the arteries
+function simulateBloodFlow() {
+    bloodFlow.style.left = '15%';
+    setTimeout(() => {
+        updateBloodFlowSpeed();
+    }, 100);
+}
+
+// Simulate blood flow periodically
+setInterval(simulateBloodFlow, 2000);
+
+    </script>
+</body>
+</html>

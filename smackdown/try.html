@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roman Numerals Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .container {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button, select {
+            margin: 10px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        .draggable {
+            padding: 10px;
+            margin: 5px;
+            background: #ddd;
+            display: inline-block;
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Identify Roman Numerals</h1>
+        <label for="romanIdentify">Choose a Roman numeral:</label>
+        <select id="romanIdentify">
+            <option value="I">I</option>
+            <option value="V">V</option>
+            <option value="X">X</option>
+            <option value="L">L</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="M">M</option>
+        </select>
+        <button onclick="identifyRoman()">Identify</button>
+        <p id="identifyResult"></p>
+    </div>
+
+    <div class="container">
+        <h1>Convert Arabic to Roman</h1>
+        <input type="number" id="arabicInput" placeholder="Enter Arabic numeral">
+        <button onclick="convertToRoman()">Convert</button>
+        <p id="romanResult"></p>
+    </div>
+
+    <div class="container">
+        <h1>Convert Roman to Arabic</h1>
+        <input type="text" id="romanInput" placeholder="Enter Roman numeral">
+        <button onclick="convertToArabic()">Convert</button>
+        <p id="arabicResult"></p>
+    </div>
+
+    <div class="container">
+        <h1>Order Roman Numerals</h1>
+        <p>Drag and drop the numerals in correct order:</p>
+        <div id="sortableList">
+            <div class="draggable" draggable="true">X</div>
+            <div class="draggable" draggable="true">I</div>
+            <div class="draggable" draggable="true">V</div>
+            <div class="draggable" draggable="true">L</div>
+        </div>
+    </div>
+
+    <script>
+        const romanMap = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+
+        function identifyRoman() {
+            const roman = document.getElementById("romanIdentify").value;
+            document.getElementById("identifyResult").innerText = `Value: ${romanMap[roman]}`;
+        }
+
+        function convertToRoman() {
+            let num = parseInt(document.getElementById("arabicInput").value);
+            if (num < 1 || num > 3999) {
+                document.getElementById("romanResult").innerText = "Enter a number between 1 and 3999";
+                return;
+            }
+            const values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+            const numerals = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+            let result = "";
+            for (let i = 0; i < values.length; i++) {
+                while (num >= values[i]) {
+                    result += numerals[i];
+                    num -= values[i];
+                }
+            }
+            document.getElementById("romanResult").innerText = `Roman Numeral: ${result}`;
+        }
+
+        function convertToArabic() {
+            let roman = document.getElementById("romanInput").value.toUpperCase();
+            let sum = 0;
+            for (let i = 0; i < roman.length; i++) {
+                if (i < roman.length - 1 && romanMap[roman[i]] < romanMap[roman[i + 1]]) {
+                    sum -= romanMap[roman[i]];
+                } else {
+                    sum += romanMap[roman[i]];
+                }
+            }
+            document.getElementById("arabicResult").innerText = `Arabic Numeral: ${sum}`;
+        }
+
+        document.querySelectorAll('.draggable').forEach(item => {
+            item.addEventListener('dragstart', event => {
+                event.dataTransfer.setData("text", event.target.innerText);
+            });
+        });
+
+        document.getElementById('sortableList').addEventListener('dragover', event => {
+            event.preventDefault();
+        });
+
+        document.getElementById('sortableList').addEventListener('drop', event => {
+            event.preventDefault();
+            let data = event.dataTransfer.getData("text");
+            let draggedElement = document.querySelector(`.draggable:contains('${data}')`);
+            event.target.appendChild(draggedElement);
+        });
+    </script>
+</body>
+</html>

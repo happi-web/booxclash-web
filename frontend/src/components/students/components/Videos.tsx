@@ -46,7 +46,6 @@ const Videos = () => {
 
   return (
     <div>
-      <h2>Videos</h2>
       {videos.length === 0 ? (
         <p>No videos available.</p>
       ) : (

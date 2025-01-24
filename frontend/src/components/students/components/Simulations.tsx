@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../../css/videos.css";
 
 const Simulations = () => {
   const [Simulations, setSimulations] = useState<any[]>([]);
@@ -35,7 +36,6 @@ const Simulations = () => {
 
   return (
     <div>
-      <h2>Simulations</h2>
       {Simulations.length === 0 ? (
         <p>No Simulations available.</p>
       ) : (

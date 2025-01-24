@@ -1,0 +1,404 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+*,
+::after,
+::before
+{
+  box-sizing: border-box;
+}
+*
+{
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --primaryColor: #0f002e; /* Deep, elegant background color */
+  --secondaryColor: #4d004d6b; /* Soft gray for the game container */
+  --backgroundColor: #f3efe3; /* Subtle beige to avoid stark white */
+  --accent-color: #ff9900; /* Vibrant amber for call-to-action elements */
+  --textColor: #ffffff; /* White text for better readability */
+  --highlight-color: #007acc; /* Cool blue for contrast against gray */
+  --button-color: #4caf50; /* Positive green for buttons */
+  --alert-color: #e74c3c; /* Attention-grabbing red for warnings/errors */
+  --box-shadow: 
+    5px 5px 10px var(--textColor), 
+    -5px -5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.bodyGameRoom {
+  background: linear-gradient(135deg, var(--primaryColor), #1a1a4b);
+  max-height: 1200px;
+  height: 120vh;
+  font-family: "Lexend Deca", sans-serif;
+}
+
+.game-container {
+  background-color: var(--secondaryColor);
+  height:120vh;
+  width: 90%;
+  margin: 10px auto;
+  border-radius: 20px;
+  position: relative;
+}
+
+.grade-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 20px;
+}
+
+.top-timer
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  gap: 20px;
+  width: 100%;
+  height: 50px;
+  align-items: center;
+}
+.grade,
+.timer {
+text-shadow: 
+    0 0 10px var(--accent-color), /* Soft glow */
+    0 0 20px var(--accent-color), /* Medium glow */
+    0 0 30px var(--accent-color), /* Stronger glow */
+    0 0 40px var(--accent-color); /* Intense glow */
+  border-radius: 10px;
+  padding: 10px;
+  height: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: rgb(255, 208, 249);
+}
+.booxclash {
+  
+  border-radius: 10px;
+  padding: 20px;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--textColor);
+}
+.booxclash h1 {
+  font-size: 2rem;
+  margin: auto;
+  color: var(--textColor); /* Ensure the text color is set */
+  text-shadow: 
+    0 0 10px var(--accent-color), /* Soft glow */
+    0 0 20px var(--accent-color), /* Medium glow */
+    0 0 30px var(--accent-color), /* Stronger glow */
+    0 0 40px var(--accent-color); /* Intense glow */
+}
+.leaderboard {
+  display: block;
+  position: absolute;
+  z-index: 999;
+  left: 74%;
+  top: 17%;
+  margin: 50px 10px;
+  border-radius: 20px;
+  height: 40vh;
+  padding: 10px;
+  width: 18%;
+  background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
+  box-shadow: var(--box-shadow);
+  color: var(--textColor);
+}
+
+.leaderboard h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--highlight-color);
+}
+
+.leaderboard ul li{
+  list-style: none;
+  margin: 10px;
+  font-size: 0.8rem;
+}
+
+.battle-ring
+{
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  right: 5%;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #520055, var(--secondaryColor),#520055);
+  width: 90%;
+  height: 50vh;
+  border-radius: 40px;
+  border: 10px solid #1e1e2f;
+  box-shadow: var(--box-shadow);
+}
+.question-display
+{
+  position: absolute;
+  width: 50%;
+  height: 95%;
+  padding: 10px;
+  top: 2%;
+  left: 10px;
+  background-color: var(--backgroundColor);
+  justify-content: center;
+  border-radius: 45px;
+  align-items: center;
+  box-shadow: var(--box-shadow);
+}
+.question-display ul
+{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top:10px ;
+}
+.question-display ul li
+{
+  list-style: none;
+  padding: 10px;
+  background-color: var(--secondaryColor);
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+}
+
+.question-display h2
+{
+    margin-top: 10px;
+  text-align: center;
+  font-size: 2rem;
+  color: var(--highlight-color);
+}
+
+.profile-placeholders-bottom
+{
+  display: flex;
+  gap: 20px;
+  position: absolute;
+  width: 90%;
+  height: auto;
+  padding: 10px;
+  top: 50%;
+  left: 19%;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-placeholders-bottom >.placeholder,
+.profile-placeholders-top > .placeholder
+{
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
+  border-radius: 50%;
+  box-shadow: var(--box-shadow);
+}
+
+
+.profile-placeholders-top
+{
+  display: flex;
+  gap: 20px;
+  position: absolute;
+  width: 90%;
+  height: auto;
+  padding: 10px;
+  top: 20%;
+  left: 19%;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  background: var(--button-color);
+  color: var(--textColor);
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background: darken(var(--button-color), 10%);
+}
+
+.pod-left
+{
+  display: flex;
+  position: absolute;
+  top: 65%;
+  left: 0;
+  right: 6%;
+  align-items: center;
+  gap: 5%;
+  margin: 0 auto;
+  width: 90%;
+}
+
+
+.pod-left > .pod
+{
+  width: 25%;
+  height: 160px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
+  box-shadow: var(--box-shadow);
+}
+
+.pod 
+{
+  text-align: center;
+  color: var(--textColor);
+}
+.pod img
+{
+  width: 60%;
+  padding: 10px;
+  text-align: center;
+  object-fit: cover;
+}
+.pod:hover,
+.placeholder:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.active {
+  box-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+}
+.energy-bar {
+  background: linear-gradient(to right, #4caf50, #f44336);
+  height: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: width 0.5s;
+}
+.details{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-left: 10px;
+}
+
+
+/* General adjustments for better content fitting */
+.pod-left > .pod {
+  width: 20%;
+  min-width: 150px;
+  height: auto;
+  padding: 10px;
+  margin: 10px;
+}
+
+.pod img {
+  width: 50%;
+  height: auto;
+  padding: 5px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pod .details span {
+  font-size: 0.9rem;
+  margin: 2px 0;
+  word-break: break-word; /* Ensure long words break correctly */
+}
+
+.details {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+  gap: 5px;
+}
+
+.details span {
+  display: inline-block;
+  text-align: center;
+}
+
+/* Add mobile responsiveness */
+@media (max-width: 768px) {
+  .grade-timer, .top-timer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .leaderboard {
+    position: static;
+    margin: 10px auto;
+    width: 90%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .battle-ring {
+    top: 10%;
+    width: 95%;
+    height: 60vh;
+    padding: 10px;
+  }
+
+  .question-display {
+    width: 90%;
+    height: auto;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .profile-placeholders-top,
+  .profile-placeholders-bottom {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .profile-placeholders-top > .placeholder,
+  .profile-placeholders-bottom > .placeholder {
+    width: 50px;
+    height: 50px;
+  }
+
+  .pod-left {
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    top: auto;
+    bottom: 10px;
+  }
+
+  .pod-left > .pod {
+    width: 45%;
+    height: auto;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .pod img {
+    width: 50%;
+    padding: 5px;
+  }
+
+  .pod .details {
+    text-align: center;
+    padding: 5px;
+    font-size: 0.8rem;
+  }
+
+  .details span {
+    display: block;
+    font-size: 0.8rem;
+    margin: 2px 0;
+  }
+}
+

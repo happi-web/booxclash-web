@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Line Addition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .number-line {
+            position: relative;
+            width: 80%;
+            height: 50px;
+            margin: 50px auto;
+            border-top: 2px solid black;
+        }
+        .marker {
+            position: absolute;
+            top: -10px;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            transition: left 1s;
+        }
+        .numbers {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number Line Addition</h1>
+    <p>Enter two numbers to add using the number line:</p>
+    <input type="number" id="num1" placeholder="First number">
+    <input type="number" id="num2" placeholder="Second number">
+    <button onclick="startAddition()">Add</button>
+    
+    <div class="number-line" id="line">
+        <div class="marker" id="marker" style="left: 0;"></div>
+    </div>
+    <div class="numbers" id="numbers"></div>
+    <p id="result"></p>
+    
+    <script>
+        function createNumberLine() {
+            const numbersDiv = document.getElementById("numbers");
+            numbersDiv.innerHTML = "";
+            for (let i = 0; i <= 10; i++) {
+                const span = document.createElement("span");
+                span.textContent = i;
+                numbersDiv.appendChild(span);
+            }
+        }
+
+        function startAddition() {
+            const num1 = parseInt(document.getElementById("num1").value) || 0;
+            const num2 = parseInt(document.getElementById("num2").value) || 0;
+            const sum = num1 + num2;
+            const marker = document.getElementById("marker");
+            
+            if (sum > 10) {
+                document.getElementById("result").textContent = "Result exceeds the number line limit!";
+                return;
+            }
+
+            marker.style.left = (sum * 10) + "%";
+            document.getElementById("result").textContent = `${num1} + ${num2} = ${sum}`;
+        }
+        
+        createNumberLine();
+    </script>
+</body>
+</html>

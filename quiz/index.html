@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Knockout Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Quiz Knockout Game</h1>
+        <div id="message"></div>
+        <div id="players"></div>
+        <div id="pairing"></div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="timer"></div>
+        <div id="winner"></div>
+        <div id="scoreboard"></div>
+        <div id="eliminated-list"></div>
+        <div id="winners-list"></div>
+    </div>
+    <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>Leaderboard</h2>
+          <div id="leaderboard"></div>
+          <div class="modal-actions">
+            <button onclick="restartGame()">Restart Game</button>
+            <button onclick="exitGame()">Exit</button>
+          </div>
+        </div>
+      </div>
+      
+    <script src="script.js"></script>
+</body>
+</html>

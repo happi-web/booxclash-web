@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Math Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            height: 600px;
+            position: relative;
+        }
+
+        .half-screen {
+            width: 48%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Place cars at the bottom initially */
+        }
+
+        .car {
+            width: 100px;
+            height: 60px;
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            line-height: 60px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .car img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .track {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #000;
+            z-index: 1;
+        }
+
+        .question-container {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .controls button {
+            font-size: 18px;
+            margin: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Left half screen -->
+        <div id="left-screen" class="half-screen">
+            <div id="car1" class="car">
+                <img src="black.png" alt="Black Car">
+                <span class="player-name">Player 1</span>
+            </div>
+        </div>
+
+        <!-- Right half screen -->
+        <div id="right-screen" class="half-screen">
+            <div id="car2" class="car">
+                <img src="blue.png" alt="Blue Car">
+                <span class="player-name">Player 2</span>
+            </div>
+        </div>
+
+        <!-- Track -->
+        <div class="track" id="track"></div>
+    </div>
+
+    <div id="question-container" class="question-container">
+        <!-- Question and options will appear here -->
+    </div>
+
+    <div id="controls" class="controls">
+        <!-- Answer buttons will appear here -->
+    </div>
+
+    <script>
+        // Game variables
+        let players = [
+            { id: "car1", name: "Player 1", position: 0, speed: 0.1 },
+            { id: "car2", name: "Player 2", position: 0, speed: 0.1 }
+        ];
+        let currentQuestionIndex = 0;
+        let timer;
+        let questions = [
+            { question: "Is 5 + 3 = 8?", answer: "True", boost: false },
+            { question: "Is 10 - 5 = 4?", answer: "False", boost: false },
+            { question: "Is 6 x 3 = 18?", answer: "True", boost: true },
+            { question: "Is 7 + 4 = 12?", answer: "False", boost: false }
+        ];
+
+        // Track progress and question interval
+        let trackHeight = 100; // track height in percentage
+        let questionInterval = 10000; // 10 seconds between questions
+        let lastQuestionTime = 0;
+
+        // Update the race
+        function updateRace() {
+            players.forEach(player => {
+                const car = document.getElementById(player.id);
+                car.style.bottom = `${player.position}%`;
+            });
+        }
+
+        // Move the car upwards continuously
+        function moveCar() {
+            players.forEach(player => {
+                player.position += player.speed; // Slow speed for movement
+                if (player.position >= 100) {
+                    declareWinner(player);
+                }
+            });
+            updateRace();
+        }
+
+        // Ask the current question
+        function askQuestion() {
+            let question = questions[currentQuestionIndex];
+            document.getElementById("question-container").innerHTML = `
+                <p>${question.question}</p>
+            `;
+            document.getElementById("controls").innerHTML = `
+                <button onclick="submitAnswer('True')">True</button>
+                <button onclick="submitAnswer('False')">False</button>
+            `;
+            lastQuestionTime = Date.now();
+        }
+
+        // Submit an answer
+        function submitAnswer(answer) {
+            let question = questions[currentQuestionIndex];
+            let correct = answer === question.answer;
+            let player = players[currentQuestionIndex % 2]; // Alternate players
+
+            if (question.boost && correct) {
+                player.speed = 10; // Boost speed if correct
+                document.getElementById("question-container").innerHTML += `
+                    <p class="speed-boost">Speed Boost! 10x Speed</p>
+                `;
+            }
+
+            moveCar();
+
+            // Move to the next question
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(() => askQuestion(), 3000); // Wait for 3 seconds before asking next question
+            }
+        }
+
+        // Declare the winner
+        function declareWinner(player) {
+            setTimeout(() => {
+                alert(`${player.name} wins!`);
+                resetGame();
+            }, 1000);
+        }
+
+        // Reset the game
+        function resetGame() {
+            players.forEach(player => {
+                player.position = 0;
+                player.speed = 1;
+            });
+            updateRace();
+            askQuestion();
+        }
+
+        // Game loop
+        function gameLoop() {
+            let timeSinceLastQuestion = Date.now() - lastQuestionTime;
+            if (timeSinceLastQuestion > questionInterval) {
+                askQuestion();
+            }
+            moveCar();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start the game
+        gameLoop();
+    </script>
+</body>
+</html>

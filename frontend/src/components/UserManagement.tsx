@@ -33,7 +33,7 @@ const UserManagement: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token'); // Assuming JWT is stored in localStorage
-        const response = await axios.get('http://localhost:4000/users', {
+        const response = await axios.get('http://localhost:4000/api/users', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsers(response.data);
@@ -57,12 +57,12 @@ const UserManagement: React.FC = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:4000/users', newUser, {
+      await axios.post('http://localhost:4000/api/users', newUser, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewUser({ username: '', password: '', role: '', grade: '' }); // Reset form
       // Refetch users to update the list
-      const response = await axios.get('http://localhost:4000/users', {
+      const response = await axios.get('http://localhost:4000/api/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -75,11 +75,11 @@ const UserManagement: React.FC = () => {
   const handleDeleteUser = async (userId: string) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4000/users/${userId}`, {
+      await axios.delete(`http://localhost:4000/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Refetch users after deletion
-      const response = await axios.get('http://localhost:4000/users', {
+      const response = await axios.get('http://localhost:4000/api/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);

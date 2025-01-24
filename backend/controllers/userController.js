@@ -14,44 +14,38 @@ const getUsers = async (req, res) => {
 
 // Update the profile picture
 const updateProfilePicture = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded.' });
-  }
-
-  const filename = req.file.filename;
-  const imageUrl = `http://localhost:4000/uploads/${filename}`;
-
   try {
-    // Assuming `req.user` contains the logged-in user information
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded.' });
+    }
+
+    const imageUrl = `http://localhost:4000/uploads/${req.file.filename}`; // Construct the image URL
+
+    // Assuming `req.user` contains the logged-in user's information (populated by authentication middleware)
     const user = await User.findByIdAndUpdate(
       req.user._id, 
       { profilePicture: imageUrl }, 
-      { new: true }
+      { new: true, select: 'username role grade profilePicture' } // Return only relevant fields
     );
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    res.json({
+    res.status(200).json({
       message: 'Profile picture updated successfully.',
-      user: {
-        username: user.username,
-        role: user.role,
-        grade: user.grade,
-        profilePicture: imageUrl, // Return the full URL
-      },
+      user,
     });
-  } catch (err) {
-    console.error('Error updating profile picture:', err);
-    res.status(500).json({ message: 'Error updating profile picture.', error: err.message });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: 'Error updating profile picture.', error: error.message });
   }
 };
 
 // Fetch profile of the logged-in user
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.user.username }).select('username role profilePicture');
+    const user = await User.findOne({ username: req.user.username }).select('username role profilePicture grade country');
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }

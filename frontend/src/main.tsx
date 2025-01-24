@@ -9,7 +9,7 @@ import ScienceLessons from './components/ScienceLessons';
 import MathLessons from './components/MathLessons';
 import MathGames from './components/MathGames';
 import ScienceGames from './components/ScienceGames';
-import Knockout from './components/games/Knockout';
+import Knockout from './components/games/Lobby';
 import NumberHunt from './components/games/NumberHunt';
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
@@ -22,6 +22,7 @@ import ContentUpload from './components/ContentUpload';
 import Analytics from './components/Analytics';
 import Settings from './components/Settings';
 import Games from './components/students/components/Games';
+import GameRoom from "./components/games/GameRoom";
 
 // Define the user type with only username and token
 interface User {
@@ -61,6 +62,7 @@ const Main: React.FC = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/content-upload" element={<ContentUpload />} />
+        <Route path="/gameroom" element={<GameRoom />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>

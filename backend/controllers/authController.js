@@ -20,7 +20,7 @@ const signup = async (req, res) => {
   console.log('Incoming request body:', req.body); // Log the incoming body for debugging
   console.log('Uploaded file:', req.file); // Log the uploaded file for debugging
 
-  const { username, password, role, grade } = req.body;
+  const { username, password, role, grade, country } = req.body; // Added country
   const profilePicture = req.file ? req.file.path : null; // Safely get the file path or assign null
 
   // Check if password exists before calling .includes
@@ -46,6 +46,11 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: 'Grade is required for students.' });
     }
 
+    // Validate country
+    if (!country) {
+      return res.status(400).json({ message: 'Country is required.' });
+    }
+
     // Check if the username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
@@ -61,6 +66,7 @@ const signup = async (req, res) => {
       password: hashedPassword,
       role: userRole, // Ensure role is assigned correctly
       grade,
+      country, // Save the country
       profilePicture, // Save the profile picture path
     });
 
@@ -68,14 +74,14 @@ const signup = async (req, res) => {
 
     // Create a JWT token
     const token = jwt.sign(
-      { username, role: userRole, grade },
+      { username, role: userRole, grade, country },
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
 
     // Send the response with user info and token
     res.status(201).json({
-      user: { username, role: userRole, grade, profilePicture: newUser.profilePicture },
+      user: { username, role: userRole, grade, country, profilePicture: newUser.profilePicture },
       token,
     });
   } catch (error) {
@@ -100,13 +106,13 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { username, role: user.role, grade: user.grade },
+      { username, role: user.role, grade: user.grade, country: user.country },
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
 
     res.json({
-      user: { username, role: user.role, grade: user.grade, profilePicture: user.profilePicture },
+      user: { username, role: user.role, grade: user.grade, country: user.country, profilePicture: user.profilePicture },
       token,
     });
   } catch (error) {

@@ -32,7 +32,6 @@ const StudentDashboard = () => {
   return (
     <>
     <NavBar/>
-        
       <div className="dashboard" style={{ display: 'flex' }}>
       <StudentSideBar onSelect={setActiveComponent} />
       <div style={{ flex: 1, padding: '20px' }}>

@@ -1,0 +1,102 @@
+[
+  {
+    "question": "What is the capital of France?",
+    "options": ["Paris", "Berlin", "Madrid", "Rome"],
+    "correctAnswer": "Paris"
+  },
+  {
+    "question": "What is 5 + 7?",
+    "options": ["10", "11", "12", "13"],
+    "correctAnswer": "12"
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+    "correctAnswer": "Mars"
+  },
+  {
+    "question": "What is the largest mammal?",
+    "options": ["Elephant", "Blue Whale", "Giraffe", "Shark"],
+    "correctAnswer": "Blue Whale"
+  },
+  {
+    "question": "How many continents are there?",
+    "options": ["5", "6", "7", "8"],
+    "correctAnswer": "7"
+  },
+  {
+    "question": "What is the boiling point of water?",
+    "options": ["50°C", "100°C", "150°C", "200°C"],
+    "correctAnswer": "100°C"
+  },
+  {
+    "question": "What is the square root of 81?",
+    "options": ["7", "8", "9", "10"],
+    "correctAnswer": "9"
+  },
+  {
+    "question": "Which ocean is the largest?",
+    "options": ["Atlantic", "Indian", "Pacific", "Arctic"],
+    "correctAnswer": "Pacific"
+  },
+  {
+    "question": "What is the chemical symbol for water?",
+    "options": ["H2O", "O2", "CO2", "H2"],
+    "correctAnswer": "H2O"
+  },
+  {
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "options": ["Charles Dickens", "Mark Twain", "William Shakespeare", "Jane Austen"],
+    "correctAnswer": "William Shakespeare"
+  },
+  {
+    "question": "What is the hardest natural substance?",
+    "options": ["Gold", "Diamond", "Iron", "Platinum"],
+    "correctAnswer": "Diamond"
+  },
+  {
+    "question": "How many legs does a spider have?",
+    "options": ["6", "8", "10", "12"],
+    "correctAnswer": "8"
+  },
+  {
+    "question": "What is the capital of Japan?",
+    "options": ["Beijing", "Tokyo", "Seoul", "Bangkok"],
+    "correctAnswer": "Tokyo"
+  },
+  {
+    "question": "What is the process plants use to make food?",
+    "options": ["Photosynthesis", "Respiration", "Digestion", "Fermentation"],
+    "correctAnswer": "Photosynthesis"
+  },
+  {
+    "question": "Which is the longest river in the world?",
+    "options": ["Nile", "Amazon", "Yangtze", "Mississippi"],
+    "correctAnswer": "Nile"
+  },
+  {
+    "question": "What is the largest desert in the world?",
+    "options": ["Sahara", "Arctic", "Antarctica", "Gobi"],
+    "correctAnswer": "Antarctica"
+  },
+  {
+    "question": "What is 12 x 12?",
+    "options": ["124", "144", "156", "164"],
+    "correctAnswer": "144"
+  },
+  {
+    "question": "What color are zebras?",
+    "options": ["White with black stripes", "Black with white stripes", "Gray with white stripes", "Brown with black stripes"],
+    "correctAnswer": "Black with white stripes"
+  },
+  {
+    "question": "How many bones are there in the human body?",
+    "options": ["205", "206", "207", "208"],
+    "correctAnswer": "206"
+  },
+  {
+    "question": "What is the smallest unit of life?",
+    "options": ["Cell", "Atom", "Molecule", "Organ"],
+    "correctAnswer": "Cell"
+  }
+]

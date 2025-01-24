@@ -4,13 +4,12 @@ import "./css/lessons.css";
 interface LessonPlan {
   gradeLevel: string;
   subject: string;
-  topic: string; // Topic field
-  lesson: string; // Lesson as the unique identifier
+  topic: string;
+  lesson: string;
   duration: string;
   learningObjectives: string;
   materialsNeeded: string;
   introduction: string;
-  imageUrl?: string; 
   lessonPresentation: string;
   interactiveActivity: string;
   questionAnswerSession: string;
@@ -19,13 +18,14 @@ interface LessonPlan {
   quizLink: string;
   gamesLink: string;
   conclusion: string;
+  flashcards: string[];
 }
 
 const initialFormData: LessonPlan = {
   gradeLevel: "5",
   subject: "Science",
-  topic: "The Water Cycle",  // Topic for more details
-  lesson: "Water Cycle Lesson",  // Lesson as unique identifier
+  topic: "The Water Cycle",
+  lesson: "Water Cycle Lesson",
   duration: "60 minutes",
   learningObjectives: "",
   materialsNeeded: "",
@@ -38,11 +38,13 @@ const initialFormData: LessonPlan = {
   quizLink: "",
   gamesLink: "",
   conclusion: "",
+  flashcards: [],
 };
 
 function TeacherUpload() {
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
   const [formData, setFormData] = useState<LessonPlan>(initialFormData);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
@@ -72,23 +74,19 @@ function TeacherUpload() {
     e.preventDefault();
     const formDataToUpload = new FormData();
 
-    // Append other form data (lesson data)
-    formDataToUpload.append("gradeLevel", formData.gradeLevel);
-    formDataToUpload.append("subject", formData.subject);
-    formDataToUpload.append("topic", formData.topic);
-    formDataToUpload.append("lesson", formData.lesson);
-    formDataToUpload.append("duration", formData.duration);
-    formDataToUpload.append("learningObjectives", formData.learningObjectives);
-    formDataToUpload.append("materialsNeeded", formData.materialsNeeded);
-    formDataToUpload.append("introduction", formData.introduction);
-    formDataToUpload.append("lessonPresentation", formData.lessonPresentation);
-    formDataToUpload.append("interactiveActivity", formData.interactiveActivity);
-    formDataToUpload.append("questionAnswerSession", formData.questionAnswerSession);
-    formDataToUpload.append("videoLink", formData.videoLink);
-    formDataToUpload.append("gameDescription", formData.gameDescription);
-    formDataToUpload.append("quizLink", formData.quizLink);
-    formDataToUpload.append("gamesLink", formData.gamesLink);
-    formDataToUpload.append("conclusion", formData.conclusion);
+    // Append text fields
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "flashcards") {
+        formDataToUpload.append(key, value);
+      }
+    });
+
+    // Append files
+    if (selectedFiles) {
+      Array.from(selectedFiles).forEach((file) => {
+        formDataToUpload.append("flashcards", file);
+      });
+    }
 
     try {
       setIsUploading(true);
@@ -109,10 +107,11 @@ function TeacherUpload() {
       const result = await response.json();
       console.log(result);
 
-      // After successful upload, reset the form
+      // Reset form
       setFormData(initialFormData);
+      setSelectedFiles(null);
       setIsUploading(false);
-      fetchLessonPlans(); // Reload lesson plans after upload
+      fetchLessonPlans();
     } catch (error) {
       setIsUploading(false);
       console.error("Upload error:", error);
@@ -123,6 +122,12 @@ function TeacherUpload() {
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(e.target.files);
+    }
   };
 
   const handleDelete = async (lesson: string) => {
@@ -164,8 +169,29 @@ function TeacherUpload() {
           <p><strong>Question and Answer Session:</strong> {plan.questionAnswerSession}</p>
           <p><strong>Video Link:</strong> <a href={plan.videoLink} target="_blank" rel="noopener noreferrer">{plan.videoLink}</a></p>
           <p><strong>Game Description:</strong> {plan.gameDescription}</p>
+          
+          {/* Games Link */}
+          {plan.gamesLink && (
+            <p><strong>Game Link:</strong> <a href={plan.gamesLink} target="_blank" rel="noopener noreferrer">{plan.gamesLink}</a></p>
+          )}
+
           <p><strong>Quiz Link:</strong> <a href={plan.quizLink} target="_blank" rel="noopener noreferrer">{plan.quizLink}</a></p>
           <p><strong>Conclusion:</strong> {plan.conclusion}</p>
+
+          {/* Flashcards Section */}
+          {plan.flashcards && plan.flashcards.length > 0 && (
+            <>
+              <p><strong>Flashcards:</strong></p>
+              <ul className="flashcard-list">
+                {plan.flashcards.map((flashcard, index) => (
+                  <li key={index}>
+                    <img src={`http://localhost:4000/${flashcard}`} alt={`Flashcard ${index + 1}`} width="100" />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
           <button onClick={() => handleDelete(plan.lesson)}>Delete</button>
         </li>
       ))}
@@ -179,14 +205,9 @@ function TeacherUpload() {
         <div>
           <label>Grade Level</label>
           <select name="gradeLevel" value={formData.gradeLevel} onChange={handleChange} required>
-            <option value="5">Grade 5</option>
-            <option value="6">Grade 6</option>
-            <option value="7">Grade 7</option>
-            <option value="8">Grade 8</option>
-            <option value="9">Grade 9</option>
-            <option value="10">Grade 10</option>
-            <option value="11">Grade 11</option>
-            <option value="12">Grade 12</option>
+            {Array.from({ length: 8 }, (_, i) => i + 5).map((grade) => (
+              <option key={grade} value={grade}>Grade {grade}</option>
+            ))}
           </select>
         </div>
 
@@ -198,27 +219,19 @@ function TeacherUpload() {
           </select>
         </div>
 
-        {["topic", "lesson", "duration", "learningObjectives", "materialsNeeded", "introduction", "lessonPresentation", "interactiveActivity", "questionAnswerSession", "videoLink", "gameDescription", "quizLink", "gamesLink", "conclusion"].map((field) => (
+        <div>
+          <label>Upload Flashcards</label>
+          <input type="file" multiple accept="image/*" onChange={handleFileUpload} />
+        </div>
+
+        {/* Removed the textarea for gradeLevel */}
+        {Object.keys(initialFormData).filter(field => field !== "flashcards" && field !== "gradeLevel").map((field) => (
           <div key={field}>
             <label>{field.replace(/([A-Z])/g, " $1").toUpperCase()}</label>
-            {field.includes("Link") ? (
-              <input
-                type="url"
-                name={field}
-                value={formData[field as keyof LessonPlan]}
-                onChange={handleChange}
-                required
-              />
-            ) : (
-              <textarea
-                name={field}
-                value={formData[field as keyof LessonPlan]}
-                onChange={handleChange}
-                required
-              />
-            )}
+            <textarea name={field} value={formData[field as keyof LessonPlan]} onChange={handleChange} required />
           </div>
         ))}
+
         <button type="submit" disabled={isUploading}>
           {isUploading ? "Uploading..." : "Upload Lesson Plan"}
         </button>

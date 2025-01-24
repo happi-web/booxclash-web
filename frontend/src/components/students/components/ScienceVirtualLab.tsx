@@ -1,6 +1,8 @@
 const ScienceVirtualLab = () => {
   return (
-    <div>You are viewing ScienceVirtualLab</div>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', fontSize: '24px', fontWeight: 'bold' }}>
+    Science Virtual Lab is Coming Soon
+   </div>
   )
 }
 
