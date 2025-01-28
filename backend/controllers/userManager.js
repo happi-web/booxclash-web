@@ -4,7 +4,7 @@ const User = require('../models/userModel');
 // Fetch all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, '_id username role grade profilePicture');
+    const users = await User.find({}, '_id username role grade profilePicture country');
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error); // Log the error for debugging

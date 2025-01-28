@@ -1,176 +1,177 @@
-// import React, { useState, useEffect } from "react";
-// import "../css/gameroom.css";
-
-// interface Question {
-//   question: string;
-//   options: string[];
-//   correctAnswer: string;
-// }
-
-// const GameRoom: React.FC = () => {
-//   const [questions, setQuestions] = useState<Question[]>([]);
-//   const [currentIndex, setCurrentIndex] = useState(0);
-
-//   useEffect(() => {
-//     // Fetch questions from questions.json
-//     fetch("questions.json")
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Failed to fetch questions");
-//         }
-//         return response.json();
-//       })
-//       .then((data) => {
-//         setQuestions(data);
-//       })
-//       .catch((error) => console.error(error));
-//   }, []);
-
-//   const currentQuestion = questions[currentIndex];
-
-//   const handleNextQuestion = () => {
-//     if (currentIndex < questions.length - 1) {
-//       setCurrentIndex(currentIndex + 1);
-//     } else {
-//       console.log("End of questions!");
-//     }
-//   };
-
-//   return (
-//     <div className="bodyGameRoom">
-//     <div className="game-container">
-//       {/* Timer and Grade Panel */}
-//       <div className="grade-timer">
-//         <div className="booxclash">
-//           <h1>BOOXCLASH SMACKDOWN</h1>
-//         </div>
-//         <div className="top-timer">
-//           <div className="grade">Grade: 5</div>
-//           <div className="timer">00:30</div>
-//         </div>
-//       </div>
-
-//       {/* Leaderboard */}
-//       <div className="leaderboard">
-//         <h2>Leaderboard</h2>
-//         <ul>
-//           <li><span>Player 1</span><span>1200 pts</span></li>
-//           <li><span>Player 2</span><span>1100 pts</span></li>
-//           <li><span>Player 3</span><span>1000 pts</span></li>
-//         </ul>
-//       </div>
-
-//       {/* Main Battle Ring */}
-//       <div className="battle-ring">
-//         <div className="question-display">
-//           {currentQuestion ? (
-//             <>
-//               <h2>{currentQuestion.question}</h2>
-//               <ul>
-//                 {currentQuestion.options.map((option, index) => (
-//                   <li key={index}>{option}</li>
-//                 ))}
-//               </ul>
-//               <button onClick={handleNextQuestion}>Next Question</button>
-//             </>
-//           ) : (
-//             <p>Loading question...</p>
-//           )}
-//         </div>
-//         <div className="profile-placeholders-top">
-//           {Array(2).fill(null).map((_, idx) => <div key={idx} className="placeholder"></div>)}
-//         </div>
-//         <div className="profile-placeholders-bottom">
-//           {Array(2).fill(null).map((_, idx) => <div key={idx} className="placeholder"></div>)}
-//         </div>
-//       </div>
-
-//       {/* Player Pods */}
-//       <div className="pod-left">
-//         {renderPods(["Player 1", "Player 2", "Player 3", "Player 4"], ["6", "6", "6", "6"], ["USA", "UK", "USA", "UK"])}
-//       </div>
-//     </div>
-//     </div>
-//   );
-// };
-
-// const renderPods = (names: string[], grades: string[], countries: string[]) => {
-//   return names.map((name, index) => (
-//     <div className="pod" key={index}>
-//       <img src="/booxclash-web/images/logo.png" alt="Player Picture" />
-//       <div className="energy-bar" style={{ width: "100%" }}></div>
-//       <div className="details">
-//         <span>Name: {name}</span>
-//         <span>Grade: {grades[index]}</span>
-//         <span>Country: {countries[index]}</span>
-//       </div>
-//     </div>
-//   ));
-// };
-
-// export default GameRoom;
-
 import React, { useState, useEffect } from "react";
 import "../css/gameroom.css";
-import axios from "axios";
 
 interface Player {
   username: string;
   grade: string;
   country: string;
-  profilePicture: string;
+  points: number;
 }
 
-interface Question {
-  question: string;
-  options: string[];
-  correctAnswer: string;
+interface GameSettings {
+  difficulty: string;
+  category: string;
+  rounds: number;
+}
+
+interface RoomDetails {
+  room_id: string;
+  host_id: string;
+  room_name: string;
+  max_players: number;
+  current_players: number;
+  players: Player[];
+  status: string;
+  created_at: string;
+  game_settings: GameSettings;
 }
 
 const GameRoom: React.FC = () => {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [roomDetails, setRoomDetails] = useState<RoomDetails | null>(null);
+  const [questions, setQuestions] = useState<any>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [score, setScore] = useState(0);
+  const [timer, setTimer] = useState(30);
+  const [highlightedPods, setHighlightedPods] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    // Fetch questions from questions.json
-    fetch("questions.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch questions");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setQuestions(data);
-      })
-      .catch((error) => console.error(error));
-
-    // Fetch players from the backend
-    const fetchPlayers = async () => {
+    const fetchRoomDetails = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:4000/api/lobby", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setPlayers(response.data.players);
+        // Fetch room details
+        const response = await fetch("http://localhost:4000/api/game/room/1737882325220");
+        if (!response.ok) throw new Error("Failed to fetch room details");
+        const data = await response.json();
+        setRoomDetails(data);
+
+        // Fetch questions from questions.json
+        const questionsResponse = await fetch("/booxclash-web/questions.json");
+        const questionsData = await questionsResponse.json();
+        setQuestions(questionsData);
       } catch (error) {
-        console.error("Error fetching players:", error);
+        console.error("Error fetching room details or questions:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchPlayers();
+    fetchRoomDetails();
   }, []);
 
-  const currentQuestion = questions[currentIndex];
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
 
-  const handleNextQuestion = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      return () => clearInterval(countdown);
     } else {
-      console.log("End of questions!");
+      // Randomly pair two players and highlight their pods
+      if (!roomDetails?.players || roomDetails.players.length < 2) return;
+
+      // Randomly select two players
+      const randomPlayerIndexes = [
+        Math.floor(Math.random() * roomDetails.players.length),
+        Math.floor(Math.random() * roomDetails.players.length),
+      ];
+    
+      setHighlightedPods(new Set(randomPlayerIndexes));
+    }
+  }, [timer, roomDetails]);
+
+  const renderPods = (players: Player[], maxPlayers: number) => {
+    const pods = [];
+    for (let i = 0; i < maxPlayers; i++) {
+      const isHighlighted = highlightedPods.has(i); // Check if this pod is highlighted
+      if (i < players.length) {
+        pods.push(
+          <div
+            className={`pod ${isHighlighted ? "highlighted" : ""}`} // Add class if highlighted
+            key={i}
+          >
+            <div className="pods-details">
+              <img src="/booxclash-web/images/logo.png" alt="Player Picture" />
+              <div className="details">
+                <span>Name: {players[i].username}</span>
+                <span>Grade: {players[i].grade}</span>
+                <span>Country: {players[i].country}</span>
+                <span>Points: {players[i].points} pts</span>
+              </div>
+            </div>
+            <div className="energy-bar"></div>
+          </div>
+        );
+      } else {
+        pods.push(
+          <div className="pod empty" key={i}>
+            <div className="pods-details">
+              <div className="details">
+                <span>Waiting for player...</span>
+              </div>
+            </div>
+            <div className="energy-bar"></div>
+          </div>
+        );
+      }
+    }
+    return pods;
+  };
+
+  const handleAnswerSelection = (selectedOption: string) => {
+    // Check if roomDetails and players are available, and if grade exists
+    if (roomDetails?.players[0]?.grade && questions) {
+      const currentQuestion = questions.Math[roomDetails.players[0].grade]?.[currentQuestionIndex];
+  
+      // If the current question exists, proceed
+      if (currentQuestion) {
+        if (selectedOption === currentQuestion.correctAnswer) {
+          setScore(score + 1); // Increment score for correct answer
+          alert("Correct answer!"); // Alert for correct answer
+        } else {
+          alert("Wrong answer! Try again."); // Alert for wrong answer
+        }
+      
+        // Move to the next question
+        if (currentQuestionIndex < questions.Math[roomDetails.players[0].grade].length - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+        } else {
+          alert("You've completed all the questions!");
+        }
+      } else {
+        console.error("No question found for the given grade or index.");
+      }
+    } else {
+      console.error("Room details or player grade is undefined.");
     }
   };
+
+  const renderQuestions = (grade: string) => {
+    if (questions && questions.Math[grade]) {
+      const currentQuestion = questions.Math[grade][currentQuestionIndex];
+      return (
+        <div className="question">
+          <p>{currentQuestion.question}</p>
+          <ul>
+            {currentQuestion.options.map((option: string, idx: number) => (
+              <li key={idx} onClick={() => handleAnswerSelection(option)}>
+                {option}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      return <p>No questions available for this grade.</p>;
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!roomDetails) {
+    return <div>Failed to load game room details.</div>;
+  }
 
   return (
     <div className="bodyGameRoom">
@@ -179,10 +180,7 @@ const GameRoom: React.FC = () => {
         <div className="grade-timer">
           <div className="booxclash">
             <h1>BOOXCLASH SMACKDOWN</h1>
-          </div>
-          <div className="top-timer">
-            <div className="grade">Grade: {players[0]?.grade || "Loading..."}</div>
-            <div className="timer">00:30</div>
+            <h1 className="timer">{timer < 10 ? `00:0${timer}` : `00:${timer}`}</h1>
           </div>
         </div>
 
@@ -190,93 +188,63 @@ const GameRoom: React.FC = () => {
         <div className="leaderboard">
           <h2>Leaderboard</h2>
           <ul>
-            {players.map((player, index) => (
+            {roomDetails.players.map((player, index) => (
               <li key={index}>
                 <span>{player.username}</span>
-                <span>0 pts</span>
+                <span>{player.points} pts</span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Main Battle Ring */}
-        <div className="battle-ring">
-          <div className="question-display">
-            {currentQuestion ? (
-              <>
-                <h2>{currentQuestion.question}</h2>
-                <ul>
-                  {currentQuestion.options.map((option, index) => (
-                    <li key={index}>{option}</li>
-                  ))}
-                </ul>
-                <button onClick={handleNextQuestion}>Next Question</button>
-              </>
-            ) : (
-              <p>Loading question...</p>
-            )}
-          </div>
-          <div className="profile-placeholders-top">
-            {players.slice(0, 2).map((player, idx) => (
-              <div key={idx} className="placeholder">
-                      <img
-                          src={
-                            player.profilePicture
-                              ? `http://localhost:4000/${player.profilePicture.replace("\\", "/")}`
-                              : "https://via.placeholder.com/150"
-                          }
-                          alt="Profile"
-                          style={{ width: "70px", height: "70px", borderRadius: "50%" }}
-                        />
-              </div>
-            ))}
-          </div>
-          <div className="profile-placeholders-bottom">
-            {players.slice(2).map((player, idx) => (
-              <div key={idx} className="placeholder">
-                      <img
-        src={
-                player.profilePicture
-                          ? `http://localhost:4000/${player.profilePicture.replace("\\", "/")}`
-                          : "https://via.placeholder.com/150"
-                      }
-                      alt="Profile"
-                      style={{ width: "70px", height: "70px", borderRadius: "50%" }}
-                    />
-              </div>
-            ))}
-          </div>
+        {/* Game Details */}
+        <div className="game-details">
+          <h2>Game Details</h2>
+          <div className="host">Host: {roomDetails.host_id}</div>
+          <div className="room">Room: {roomDetails.room_name}</div>
+          <div className="subject">Status: {roomDetails.status}</div>
+          <div className="spectators">Max Players: {roomDetails.max_players}</div>
+          {roomDetails.game_settings && (
+            <div className="settings">
+              <p>Difficulty: {roomDetails.game_settings.difficulty}</p>
+              <p>Category: {roomDetails.game_settings.category}</p>
+              <p>Rounds: {roomDetails.game_settings.rounds}</p>
+            </div>
+          )}
         </div>
 
-        {/* Player Pods */}
-        <div className="pod-left">
-          {renderPods(players)}
+        {/* Main Battle Ring */}
+        <div className="battle-ring">
+          <div className="inner-ring">
+            <div className="question-display">
+              <h2>Ready to start the game?</h2>
+              {/* Render questions based on the first player's grade */}
+              {roomDetails.players.length > 0 && renderQuestions(roomDetails.players[0].grade)}
+              <button>Start Game</button>
+            </div>
+          </div>
+
+          <div className="pod-background-bottom">
+            <div className="pod-left">
+              {renderPods(
+                roomDetails.players.slice(0, Math.ceil(roomDetails.max_players / 2)),
+                Math.ceil(roomDetails.max_players / 2)
+              )}
+            </div>
+          </div>
+
+          <div className="pod-background-top">
+            <div className="pod-top">
+              {renderPods(
+                roomDetails.players.slice(Math.ceil(roomDetails.max_players / 2)),
+                Math.floor(roomDetails.max_players / 2)
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-const renderPods = (players: Player[]) => {
-  return players.map((player, index) => (
-    <div className="pod" key={index}>
-      <img
-        src={
-          player.profilePicture
-            ? `http://localhost:4000/${player.profilePicture.replace("\\", "/")}`
-            : "https://via.placeholder.com/150"
-        }
-        alt="Profile"
-        style={{ width: "70px", height: "70px", borderRadius: "50%" }}
-      />
-      <div className="energy-bar" style={{ width: "100%" }}></div>
-      <div className="details">
-        <span>Name: {player.username}</span>
-        <span>Grade: {player.grade}</span>
-        <span>Country: {player.country}</span>
-      </div>
-    </div>
-  ));
 };
 
 export default GameRoom;

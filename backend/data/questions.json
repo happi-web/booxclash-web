@@ -1,108 +1,102 @@
 {
-    "Math": {
-      "5": [
-        {
-          "question": "What is 5 + 7?",
-          "options": ["10", "11", "12", "13"],
-          "correctAnswer": "12"
-        },
-        {
-          "question": "What is 9 x 6?",
-          "options": ["54", "56", "58", "60"],
-          "correctAnswer": "54"
-        },
-        {
-          "question": "What is 12 + 8?",
-          "options": ["18", "19", "20", "21"],
-          "correctAnswer": "20"
-        },
-        {
-          "question": "What is 7 x 8?",
-          "options": ["56", "54", "58", "60"],
-          "correctAnswer": "56"
-        },
-        {
-          "question": "What is 45 ÷ 5?",
-          "options": ["8", "9", "10", "11"],
-          "correctAnswer": "9"
-        },
-        {
-          "question": "What is 9 + 15?",
-          "options": ["24", "23", "25", "26"],
-          "correctAnswer": "24"
-        },
-        {
-          "question": "What is 14 x 2?",
-          "options": ["28", "30", "32", "34"],
-          "correctAnswer": "28"
-        },
-        {
-          "question": "What is 56 ÷ 7?",
-          "options": ["6", "7", "8", "9"],
-          "correctAnswer": "8"
-        },
-        {
-          "question": "What is 25 + 19?",
-          "options": ["43", "44", "45", "46"],
-          "correctAnswer": "44"
-        },
-        {
-          "question": "What is 12 x 3?",
-          "options": ["36", "34", "38", "40"],
-          "correctAnswer": "36"
-        },
-        {
-          "question": "What is 72 ÷ 9?",
-          "options": ["8", "9", "10", "11"],
-          "correctAnswer": "8"
-        },
-        {
-          "question": "What is 18 + 14?",
-          "options": ["30", "31", "32", "33"],
-          "correctAnswer": "32"
-        },
-        {
-          "question": "What is 4 x 9?",
-          "options": ["36", "32", "34", "38"],
-          "correctAnswer": "36"
-        },
-        {
-          "question": "What is 16 ÷ 2?",
-          "options": ["6", "7", "8", "9"],
-          "correctAnswer": "8"
-        },
-        {
-          "question": "What is 33 + 11?",
-          "options": ["44", "45", "46", "47"],
-          "correctAnswer": "44"
-        },
-        {
-          "question": "What is 20 x 5?",
-          "options": ["100", "105", "110", "115"],
-          "correctAnswer": "100"
-        },
-        {
-          "question": "What is 36 ÷ 6?",
-          "options": ["6", "7", "8", "9"],
-          "correctAnswer": "6"
-        },
-        {
-          "question": "What is 13 x 4?",
-          "options": ["52", "53", "54", "55"],
-          "correctAnswer": "52"
-        },
-        {
-          "question": "What is 50 + 24?",
-          "options": ["74", "75", "76", "77"],
-          "correctAnswer": "74"
-        },
-        {
-          "question": "What is 28 ÷ 4?",
-          "options": ["6", "7", "8", "9"],
-          "correctAnswer": "7"
-        }
-      ]
-    },
+  "Math": {
+    "5": [
+      {
+        "question": "What is 5 + 7?",
+        "options": ["10", "11", "12", "13"],
+        "correctAnswer": "12"
+      },
+      {
+        "question": "What is 9 x 6?",
+        "options": ["54", "56", "58", "60"],
+        "correctAnswer": "54"
+      }
+    ],
+    "6": [
+      {
+        "question": "What is 12 ÷ 4?",
+        "options": ["2", "3", "4", "5"],
+        "correctAnswer": "3"
+      },
+      {
+        "question": "What is 15 x 3?",
+        "options": ["45", "50", "60", "70"],
+        "correctAnswer": "45"
+      }
+    ],
+    "7": [
+      {
+        "question": "What is the perimeter of a rectangle with length 5 cm and width 3 cm?",
+        "options": ["16 cm", "14 cm", "15 cm", "18 cm"],
+        "correctAnswer": "16 cm"
+      },
+      {
+        "question": "What is 25 ÷ 5?",
+        "options": ["3", "4", "5", "6"],
+        "correctAnswer": "5"
+      }
+    ],
+    "8": [
+      {
+        "question": "What is the area of a triangle with base 10 cm and height 5 cm?",
+        "options": ["25 cm²", "30 cm²", "35 cm²", "50 cm²"],
+        "correctAnswer": "25 cm²"
+      },
+      {
+        "question": "What is 16 x 9?",
+        "options": ["144", "150", "160", "170"],
+        "correctAnswer": "144"
+      }
+    ],
+    "9": [
+      {
+        "question": "What is the square root of 144?",
+        "options": ["10", "11", "12", "13"],
+        "correctAnswer": "12"
+      },
+      {
+        "question": "What is 15²?",
+        "options": ["225", "200", "250", "275"],
+        "correctAnswer": "225"
+      }
+    ],
+    "10": [
+      {
+        "question": "What is the value of x in 2x + 3 = 7?",
+        "options": ["1", "2", "3", "4"],
+        "correctAnswer": "2"
+      },
+      {
+        "question": "What is the solution to the equation 3x = 18?",
+        "options": ["4", "5", "6", "7"],
+        "correctAnswer": "6"
+      }
+    ],
+    "11": [
+      {
+        "question": "What is the derivative of x²?",
+        "options": ["x", "2x", "x²", "2"],
+        "correctAnswer": "2x"
+      },
+      {
+        "question": "What is the integral of 2x?",
+        "options": ["x²", "2x²", "x² + C", "2x + C"],
+        "correctAnswer": "x² + C"
+      }
+    ],
+    "12": [
+      {
+        "question": "What is the limit of (x² - 4) / (x - 2) as x approaches 2?",
+        "options": ["0", "1", "2", "4"],
+        "correctAnswer": "4"
+      },
+      {
+        "question": "What is the quadratic formula?",
+        "options": ["x = (-b ± √(b² - 4ac)) / 2a", "x = (b ± √(b² + 4ac)) / 2a", "x = (-a ± √(b² - 4ac)) / 2b", "x = (b ± √(b² - ac)) / 2c"],
+        "correctAnswer": "x = (-b ± √(b² - 4ac)) / 2a"
+      }
+    ]
+  },
   "Science": {
     "5": [
       {

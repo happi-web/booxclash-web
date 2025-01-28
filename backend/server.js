@@ -13,7 +13,6 @@ const studentProfileRoutes = require("./routes/studentsProfileRoutes");
 const contentRoutes = require("./routes/contentRoutes");
 const lobbyRoutes = require("./routes/lobbyRoutes");
 const gameRoutes = require("./routes/gameRoutes");
-const { setupSocket } = require("./controllers/gameController");
 
 require("dotenv").config();
 
@@ -50,8 +49,21 @@ app.use("/api/game", gameRoutes);
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Set up socket events
-setupSocket(io); // Initialize WebSocket logic in the game controller
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("start_game", (data) => {
+    // Emit game started to all players in the room
+    io.to(data.roomId).emit("game_started", { roomId: data.roomId });
+  });
+
+  // Other socket events...
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
 
 // Start server
 const PORT = process.env.PORT || 4000;

@@ -29,62 +29,45 @@
 .bodyGameRoom {
   background: linear-gradient(135deg, var(--primaryColor), #1a1a4b);
   max-height: 1200px;
-  height: 120vh;
+  height: 99vh;
   font-family: "Lexend Deca", sans-serif;
 }
 
 .game-container {
   background-color: var(--secondaryColor);
-  height:120vh;
+  height:99vh;
   width: 90%;
-  margin: 10px auto;
+  margin: 0 auto;
   border-radius: 20px;
   position: relative;
 }
 
-.grade-timer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 20px;
-}
-
-.top-timer
-{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  gap: 20px;
-  width: 100%;
-  height: 50px;
-  align-items: center;
-}
 .grade,
 .timer {
+flex-direction: column;
 text-shadow: 
     0 0 10px var(--accent-color), /* Soft glow */
     0 0 20px var(--accent-color), /* Medium glow */
     0 0 30px var(--accent-color), /* Stronger glow */
     0 0 40px var(--accent-color); /* Intense glow */
   border-radius: 10px;
-  padding: 10px;
   height: 50px;
   font-size: 1.2rem;
   font-weight: bold;
   color: rgb(255, 208, 249);
 }
 .booxclash {
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
-  padding: 20px;
   justify-content: center;
   font-weight: bold;
+  padding: 2px;
   color: var(--textColor);
 }
 .booxclash h1 {
-  font-size: 2rem;
+  font-size:2rem;
   margin: auto;
   color: var(--textColor); /* Ensure the text color is set */
   text-shadow: 
@@ -97,18 +80,33 @@ text-shadow:
   display: block;
   position: absolute;
   z-index: 999;
-  left: 74%;
-  top: 17%;
+  left: 73%;
+  top: 30%;
   margin: 50px 10px;
   border-radius: 20px;
-  height: 40vh;
+  height: auto;
   padding: 10px;
   width: 18%;
   background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
   box-shadow: var(--box-shadow);
   color: var(--textColor);
 }
-
+.game-details {
+  display: block;
+  position: absolute;
+  z-index: 999;
+  left: 6.5%;
+  top: 30%;
+  margin: 50px 10px;
+  border-radius: 20px;
+  height: auto;
+  padding: 10px;
+  width: 18%;
+  text-align: left;
+  background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
+  box-shadow: var(--box-shadow);
+  color: var(--textColor);
+}
 .leaderboard h2 {
   text-align: center;
   font-size: 1.2rem;
@@ -128,34 +126,45 @@ text-shadow:
   font-size: 0.7rem;
   text-align: left;
 }
-
+.inner-ring
+{
+  position: absolute;
+  top: 30%;
+  left: 5%;
+  right: 5%;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #520055, var(--secondaryColor),#520055);
+  width: 50%;
+  height: 35vh;
+  border: 10px solid #ffffff;
+  box-shadow: var(--box-shadow);
+  z-index: 999;
+}
 .battle-ring
 {
   position: absolute;
-  top: 20%;
   left: 5%;
   right: 5%;
   margin: 0 auto;
   background: linear-gradient(180deg, #520055, var(--secondaryColor),#520055);
   width: 90%;
-  height: 50vh;
+  height: 82vh;
   border-radius: 40px;
   border: 10px solid #1e1e2f;
   box-shadow: var(--box-shadow);
 }
+
 .question-display
 {
   position: absolute;
-  width: 50%;
+  width: 98%;
   height: 95%;
   padding: 10px;
-  top: 2%;
-  left: 10px;
+  top: 3%;
+  left: 4.5px;
   background-color: var(--backgroundColor);
   justify-content: center;
-  border-radius: 45px;
   align-items: center;
-  box-shadow: var(--box-shadow);
 }
 .question-display ul
 {
@@ -179,12 +188,26 @@ text-shadow:
 
 .question-display h2
 {
-    margin-top: 10px;
+  margin-top: 10px;
   text-align: center;
   font-size: 2rem;
   color: var(--highlight-color);
 }
+.option-button
+{
+  cursor: pointer;
+}
 
+.highlight {
+  background-color: rgba(255, 255, 0, 0.5); /* Highlight background with a light green */
+  border: 8px solid green; /* Optional: Add a green border */
+  box-shadow: 0 0 40px 3px green; /* Optional: Glow effect */
+}
+
+/* Timer Started Class for top and bottom containers */
+.timer-started .placeholder {
+  transition: all 0.3s ease; /* Smooth transition when the highlight effect is applied */
+}
 .profile-placeholders-bottom
 {
   display: flex;
@@ -243,37 +266,65 @@ text-shadow:
 {
   display: flex;
   position: absolute;
-  top: 65%;
-  left: 0;
+  top: 76%;
+  gap: 20px;
+  left: 1%;
   right: 6%;
   align-items: center;
-  gap: 5%;
   margin: 0 auto;
-  width: 90%;
+  width: 98%;
 }
 
+.pod-top
+{
+  display: flex;
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  right: 6%;
+  gap: 20px;
+  align-items: center;
+  margin: 0 auto;
+  width: 98%;
+}
 
 .pod-left > .pod
 {
-  width: 25%;
-  height: 160px;
-  border-radius: 20px;
+  width: 50%;
+  gap: 10%;
+  height: 100px;
   background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
   box-shadow: var(--box-shadow);
 }
-
+.pod-top > .pod
+{
+  height: 100px;
+  width: 50%;
+  gap: 10%;
+  margin-top: 10px;
+  background: linear-gradient(180deg, #cccccc, var(--secondaryColor));
+  box-shadow: var(--box-shadow);
+}
 .pod 
 {
+  display: flex;
   text-align: center;
+  border-radius: 30px;
   color: var(--textColor);
 }
-
-.pod img
+.pods-details
 {
-  width: 60%;
-  padding: 10px;
-  text-align: center;
-  object-fit: cover;
+  display:flex ;
+  width: 70%;
+}
+.details
+{
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  text-align: left;
+  padding-left: 15px;
+
 }
 .pod:hover,
 .placeholder:hover {
@@ -281,52 +332,46 @@ text-shadow:
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
 }
+.pod.highlighted {
+  background-color: skyblue;
+}
 
 .active {
   box-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
 }
-.energy-bar {
-  background: linear-gradient(to right, #4caf50, #f44336);
-  height: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  transition: width 0.5s;
-}
 
-/* General adjustments for better content fitting */
-.pod-left > .pod {
-  width: 20%;
-  min-width: 150px;
-  height: auto;
-  padding: 10px;
-  margin: 10px;
-}
 
 .pod img {
-  width: 50%;
-  height: auto;
+  width: 30%;
+  height: 60px;
   padding: 5px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.pod .details span {
-  font-size: 0.9rem;
-  margin: 2px 0;
-  word-break: break-word; /* Ensure long words break correctly */
-}
 
-.details {
-  flex: 1;
-  text-align: left;
+.energy-bar {
+  width: 30%;
+  height: auto;
+  border-radius: 0px 30px 30px 0px;
+  background-color: green;
+  transition: width 0.5s ease-out;
+}
+.energy-bar-background{
+  border-radius: 40px;
   padding: 5px;
-  gap: 5px;
+  width: 100%;
+  height: 20px;
+  background-color: blanchedalmond;
+}
+.energy-bar[style*="width: 0%"] {
+  background-color: red;
 }
 
-.details span {
-  display: inline-block;
-  text-align: left;
+.energy-bar[style*="width: 50%"] {
+  background-color: yellow;
 }
+
 
 /* Add mobile responsiveness */
 @media (max-width: 768px) {

@@ -1,64 +1,30 @@
-const jwt = require("jsonwebtoken");
+const Room = require("../models/Room");
 
-let currentQuestion = null;
-let players = [];
-let winner = null;
+// Controller to get room details
+const getRoomDetails = async (req, res) => {
+  try {
+    const { room_id } = req.params;
+    const room = await Room.findOne({ room_id });
 
-const setupSocket = (io) => {
-  io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
 
-    // Handle game start from the frontend
-    socket.on("startGame", (gamePlayers) => {
-      players = gamePlayers.map((p) => ({ ...p, eliminated: false, score: 0 }));
-      winner = null;
-      io.emit("gameStarted", { players });
+    res.json({
+      room_id: room.room_id,
+      host_id: room.host_id,
+      room_name: room.room_name,
+      max_players: room.max_players,
+      current_players: room.current_players,
+      players: room.players,
+      status: room.status,
+      created_at: room.created_at,
+      game_settings: room.game_settings, // Include game_settings in the response
     });
-
-    // Handle pairing of players
-    socket.on("pairPlayers", (pair) => {
-      io.emit("newPair", pair);
-    });
-
-    // Receive question from frontend and broadcast it
-    socket.on("sendQuestion", (question) => {
-      currentQuestion = question;
-      io.emit("newQuestion", { question });
-      io.emit("resetTimer", 20); // Reset timer
-    });
-
-    // Handle answer submission
-    socket.on("submitAnswer", ({ playerId, selectedOption }) => {
-      if (!currentQuestion) return;
-
-      const correctAnswer = currentQuestion.answer;
-      const isCorrect = selectedOption === correctAnswer;
-
-      const playerIndex = players.findIndex((p) => p.id === playerId);
-      if (playerIndex === -1) return;
-
-      if (players[playerIndex].eliminated) return;
-
-      if (isCorrect) {
-        players[playerIndex].score += 10;
-        io.emit("correctAnswer", { playerId });
-      } else {
-        players[playerIndex].eliminated = true;
-        io.emit("playerEliminated", { playerId, name: players[playerIndex].name });
-      }
-
-      // Check if only one player remains
-      const remainingPlayers = players.filter((p) => !p.eliminated);
-      if (remainingPlayers.length === 1) {
-        winner = remainingPlayers[0].name;
-        io.emit("gameOver", { winner });
-      }
-    });
-
-    socket.on("disconnect", () => {
-      console.log("A user disconnected:", socket.id);
-    });
-  });
+  } catch (error) {
+    console.error("Error fetching room details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
-module.exports = { setupSocket };
+module.exports = { getRoomDetails };

@@ -62,7 +62,7 @@ const Main: React.FC = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/content-upload" element={<ContentUpload />} />
-        <Route path="/gameroom" element={<GameRoom />} />
+        <Route path="/game-room/:roomId" element={<GameRoom />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
