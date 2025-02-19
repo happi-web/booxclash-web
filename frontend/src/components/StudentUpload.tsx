@@ -25,6 +25,7 @@ type Pathway = {
 
 const StudentUpload = () => {
   const [pathways, setPathways] = useState<Pathway[]>([]);
+  const [quizText, setQuizText] = useState("");
   const [form, setForm] = useState<Pathway>({
     title: "",
     subject: "",
@@ -136,6 +137,28 @@ const StudentUpload = () => {
     });
   };
 
+  const parseQuizText = (text: string) => {
+    const questionsArray = text
+      .trim()
+      .split("\n\n") // Each question block is separated by a blank line
+      .map((block) => {
+        const lines = block.split("\n").map((line) => line.trim());
+        if (lines.length < 3) return null; // Ensure enough lines exist
+  
+        return {
+          question: lines[0], // First line is the question
+          options: lines.slice(1, -1), // Middle lines are options
+          correctAnswer: lines[lines.length - 1], // Last line is the correct answer
+        };
+      })
+      .filter(Boolean) as QuizQuestion[];
+  
+    setForm((prev) => ({
+      ...prev,
+      sections: { ...prev.sections, quiz: questionsArray },
+    }));
+  };
+
   return (
     <div className="p-5">
       <h1 className="text-xl font-bold">{editingId ? "Edit Pathway" : "Admin Dashboard"}</h1>
@@ -171,19 +194,46 @@ const StudentUpload = () => {
         <input name="references" value={form.sections.references.join(", ")} onChange={(e) => handleSectionChange("references", e)} className="w-full p-2 border rounded" />
 
         {/* Quiz */}
-        <h3 className="font-bold">Quiz</h3>
-        {form.sections.quiz.map((q, index) => (
-          <div key={index} className="p-3 border rounded">
-            <label>Question</label>
-            <input value={q.question} onChange={(e) => handleQuizChange(index, "question", e.target.value)} className="w-full p-2 border rounded" />
+        <label>Quiz Questions (Paste in format)</label>
+      <textarea
+        className="w-full p-2 border rounded"
+        value={quizText}
+        onChange={(e) => setQuizText(e.target.value)}
+        placeholder={`Question 1?
+Option A
+Option B
+Option C
+Option D
+Correct Answer
 
-            <label>Options (comma-separated)</label>
-            <input value={q.options.join(", ")} onChange={(e) => handleQuizChange(index, "options", e.target.value)} className="w-full p-2 border rounded" />
+Question 2?
+Option A
+Option B
+Option C
+Option D
+Correct Answer`}
+      ></textarea>
+      <button
+        type="button"
+        className="bg-green-500 text-white p-2 rounded"
+        onClick={() => parseQuizText(quizText)}
+      >
+        Convert to Quiz
+      </button>
 
-            <label>Correct Answer</label>
-            <input value={q.correctAnswer} onChange={(e) => handleQuizChange(index, "correctAnswer", e.target.value)} className="w-full p-2 border rounded" />
-          </div>
-        ))}
+      {/* Preview Parsed Quiz */}
+      <h3 className="font-bold">Preview Quiz</h3>
+      {form.sections.quiz.map((q, index) => (
+        <div key={index} className="p-3 border rounded">
+          <p><strong>Q{index + 1}:</strong> {q.question}</p>
+          <ul>
+            {q.options.map((option, idx) => (
+              <li key={idx}>{option}</li>
+            ))}
+          </ul>
+          <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+        </div>
+      ))}
 
         <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">
           {editingId ? "Update Pathway" : "Add Pathway"}
