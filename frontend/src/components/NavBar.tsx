@@ -17,7 +17,7 @@ function NavBar() {
         <nav className={`navbar ${menuOpen ? 'active' : ''}`}>
           <ul className="menu">
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/game-room/:roomId">Support</Link></li>
+            <li><Link to="/support">Support</Link></li>
             <li><Link to="/signup">SignUp</Link></li>
             <li><Link to="/login">Login</Link></li>
           </ul>

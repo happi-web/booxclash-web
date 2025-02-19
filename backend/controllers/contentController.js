@@ -1,8 +1,8 @@
 // controllers/contentController.js
-const Content = require('../models/contentModel');
+import Content from '../models/contentModel.js';
 
 // Controller to fetch content based on its type
-exports.getContentByType = async (req, res) => {
+export async function getContentByType(req, res) {
   const { type } = req.params; // Get the content type from the URL (e.g., 'video', 'simulation')
 
   try {
@@ -25,4 +25,4 @@ exports.getContentByType = async (req, res) => {
     console.error('Error fetching content:', error);
     res.status(500).json({ message: 'Error fetching content.', error: error.message });
   }
-};
+}

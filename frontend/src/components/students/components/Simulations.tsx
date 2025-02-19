@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../../css/videos.css";
+import "../../css/index.css";
 
 const Simulations = () => {
   const [Simulations, setSimulations] = useState<any[]>([]);

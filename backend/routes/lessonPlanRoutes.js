@@ -1,9 +1,9 @@
-const express = require('express');
-const { uploadLessonPlan, getLessonPlans, deleteLessonPlan } = require('../controllers/lessonPlanController');
-const authenticate = require('../middlewares/authMiddleware');
-const multer = require("multer");
+import { Router } from 'express';
+import { uploadLessonPlan, getLessonPlans, deleteLessonPlan } from '../controllers/lessonPlanController.js';
+import authenticate from '../middlewares/authMiddleware.js';
+import multer from "multer";
 const upload = multer({ dest: "uploads/" });
-const router = express.Router();
+const router = Router();
 
 // Route to upload a new lesson plan
 router.post('/api/upload-lesson', authenticate, upload.array('flashcards'), uploadLessonPlan);
@@ -14,4 +14,4 @@ router.get('/api/lessons', authenticate, getLessonPlans);
 // Route to delete a lesson plan by its lesson identifier
 router.delete('/api/lessons/:lesson', authenticate, deleteLessonPlan);
 
-module.exports = router;
+export default router;

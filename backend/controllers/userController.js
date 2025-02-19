@@ -1,8 +1,8 @@
-const User = require('../models/userModel');
-const path = require('path');
+import User from '../models/userModel.js';
+import path from 'path';
 
 // Fetch all users
-const getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
     const users = await User.find(); // Fetching all users
     res.status(200).json(users);
@@ -13,7 +13,7 @@ const getUsers = async (req, res) => {
 };
 
 // Update the profile picture
-const updateProfilePicture = async (req, res) => {
+export const updateProfilePicture = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded.' });
@@ -43,7 +43,7 @@ const updateProfilePicture = async (req, res) => {
 };
 
 // Fetch profile of the logged-in user
-const getProfile = async (req, res) => {
+export const getProfile = async (req, res) => {
   try {
     const user = await User.findOne({ username: req.user.username }).select('username role profilePicture grade country');
     if (!user) {
@@ -58,4 +58,4 @@ const getProfile = async (req, res) => {
 
 
 
-module.exports = { getUsers, getProfile, updateProfilePicture };
+export default { getUsers, getProfile, updateProfilePicture };

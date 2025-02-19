@@ -1,123 +1,22 @@
-/* Universal box-sizing and reset */
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
-* {
-  padding: 0;
-  margin: 0;
-}
-
-.container
+.inner-interface
 {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-form
-{
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-  flex-wrap: wrap;
-  border: 2px solid gray;
   width: 60%;
-  margin: 10px;
-  padding: 15px;
-}
-form label
-{
-  text-align: center;
-  color: blue;
-  padding: 5px;
-  margin: 5px;
-}
-
-form input
-{
-  text-align: center;
-  width: 30%;
-}
-
-form textarea {
-  text-align: center;
-  width: 60%;
-  height: auto;
-  min-height: 50px; /* Ensure it starts with a reasonable minimum height */
-  resize: none; /* Disable manual resizing */
-  overflow: hidden; /* Hide the scrollbar */
-}
-
-button {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: gray;
-  cursor: not-allowed;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-/* Lesson plan grid layout */
-.lesson-plan-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-  gap: 20px;
-  width: 60%;
-}
-
-.lesson-plan-item {
-  border: 3px solid purple;
+  background-color:rgb(195, 184, 255);
+  height: 70vh;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
+  position: absolute;
+  top: 25%;
+  left: 20%;
+  bottom: 10%;
+  margin: 0 auto;
+  border: 10px solid rgb(56, 56, 56);
+  border-radius: 20px;
+  border-style: ridge;
+  
 }
-
-.lesson-plan-item h2 {
-  margin-top: 0;
-}
-
-.lesson-plan-item img {
-  width: 50%; /* Set image width to 50% */
-  height: auto;
-  margin-bottom: 10px;
-}
-
-.flashcards-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 equal columns for flashcards */
-  gap: 20px;
-  justify-items: center;
-  margin-top: 10px;
-}
-
-.flashcard-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.flashcard-item img {
-  width: 100px; /* Set flashcard image width */
-  height: auto;
-}
-
-.flashcard-item p {
-  text-align: center;
-  margin-top: 5px;
+.outer-interface
+{
+  position: relative;
+  background-color: rgb(88, 99, 255);
+  height:100vh;
 }

@@ -1,20 +1,25 @@
+import express from "express";
+import cors from "cors";
+import path from "path";
+import http from "http";
+import bodyParser from "body-parser";
+import { Server } from "socket.io";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import lessonPlanRoutes from "./routes/lessonPlanRoutes.js";
+import studentUploadRoutes from "./routes/studentUploadRoutes.js";
+import studentProfileRoutes from "./routes/studentsProfileRoutes.js";
+import contentRoutes from "./routes/contentRoutes.js";
+import lobbyRoutes from "./routes/lobbyRoutes.js";
+import gameRoutes from "./routes/gameRoutes.js";
+import childRoutes from "./routes/childRoutes.js";
+import childProfileRoutes from "./routes/childProfileRoutes.js";
+import lessonRoutes from "./routes/lessonRoutes.js";
+import pathwayRoutes from "./routes/pathwayRoutes.js";
 
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
-const lessonPlanRoutes = require("./routes/lessonPlanRoutes");
-const studentUploadRoutes = require("./routes/studentUploadRoutes");
-const studentProfileRoutes = require("./routes/studentsProfileRoutes");
-const contentRoutes = require("./routes/contentRoutes");
-const lobbyRoutes = require("./routes/lobbyRoutes");
-const gameRoutes = require("./routes/gameRoutes");
-
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 // Initialize app and server
 const app = express();
@@ -40,14 +45,18 @@ app.use(express.json());
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(lessonPlanRoutes);
-app.use("/api", studentUploadRoutes);
+app.use("/api/lessons", studentUploadRoutes);
+app.use("/api/lessons", lessonRoutes);
 app.use("/api", studentProfileRoutes);
 app.use("/api", contentRoutes);
 app.use("/api/lobby", lobbyRoutes);
+app.use("/api/pathways", pathwayRoutes);
 app.use("/api/game", gameRoutes);
+app.use("/api/children", childRoutes);
+app.use("/api/profile", childProfileRoutes);
 
 // Serve static files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -64,6 +73,9 @@ io.on("connection", (socket) => {
   });
 });
 
+// Increase payload size limit
+app.use(bodyParser.json({ limit: "10mb" })); // Adjust as needed
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 // Start server
 const PORT = process.env.PORT || 4000;

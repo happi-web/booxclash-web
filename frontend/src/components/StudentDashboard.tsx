@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import Profile from './Profile';
-import Videos from './students/components/Videos';
-import Simulations from './students/components/Simulations';
+import ChildProfile from './ChildProfile';
 import Games from './students/components/Games';
 import ScienceVirtualLab from './students/components/ScienceVirtualLab';
 import StudentSideBar from './StudentSideBar';
 import NavBar from './NavBar';
+import Pathway from './students/components/Pathway';
 
 const StudentDashboard = () => {
   // State to track which component to display
@@ -15,17 +14,15 @@ const StudentDashboard = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Profile':
-        return <Profile />;
-      case 'Videos':
-        return <Videos />;
-      case 'Simulations':
-        return <Simulations />;
+        return <ChildProfile/>;
+      case 'Pathway':
+        return <Pathway/>;
       case 'Games':
         return <Games />;
       case 'Science Virtual Lab':
         return <ScienceVirtualLab />;
       default:
-        return <Profile />;
+        return <ChildProfile />;
     }
   };
 

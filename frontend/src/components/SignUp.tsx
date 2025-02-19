@@ -1,5 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import axios from "axios";
+import  "./css/index.css";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 
@@ -17,20 +18,23 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    role: "student",
-    grade: "",
+    role: "parent", // Default role changed to parent
     country: "",
     state: "",
     profilePicture: null as File | null,
   });
 
+  const [isAdmin, setIsAdmin] = useState(false);
   const [countries, setCountries] = useState<{ name: string; cca2: string }[]>([]);
-  const [states, setStates] = useState<string[]>([]); // To handle states
+  const [states, setStates] = useState<string[]>([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>("");
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false); // To control password visibility
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch countries from REST Countries API
+  // Fetch ADMIN_SECRET from .env
+const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || "";
+
+
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -40,7 +44,7 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
             name: country.name.common,
             cca2: country.cca2,
           }))
-          .sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name)); // Sorting countries alphabetically
+          .sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name));
 
         setCountries(sortedCountries);
       } catch (error) {
@@ -51,25 +55,45 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
     fetchCountries();
   }, []);
 
-  // Handle country selection and update form data accordingly
   useEffect(() => {
     if (!selectedCountryCode) {
-      setStates([]); // Reset states when no country is selected
+      setStates([]);
       return;
     }
-
-    // For the REST Countries API, state/province data may not be available directly
-    // You can modify it to fetch states from a different API if needed
-    setStates([]); // For now, assuming no states are available
+    setStates([]);
   }, [selectedCountryCode]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  
+    setFormData((prev) => {
+      let updatedRole = prev.role;
+  
+      // Ensure the role updates when the dropdown changes
+      if (name === "role") {
+        updatedRole = value;
+      }
+  
+      if (name === "password") {
+        if (value === ADMIN_SECRET) {
+          updatedRole = "admin";
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      }
+  
+      return {
+        ...prev,
+        [name]: value,
+        role: updatedRole, // Ensure role updates properly
+      };
+    });
   };
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files; // Extract files to a constant
+    const files = e.target.files;
     if (files && files.length > 0) {
       setFormData((prev) => ({ ...prev, profilePicture: files[0] }));
     }
@@ -81,7 +105,6 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
       payload.append("username", formData.username);
       payload.append("password", formData.password);
       payload.append("role", formData.role);
-      payload.append("grade", formData.grade);
       payload.append("country", formData.country);
       payload.append("state", formData.state);
       if (formData.profilePicture) {
@@ -97,13 +120,11 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
       setUser(data.user);
       navigate("/login");
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Error during signup. Please try again.";
       console.error("Error during signup:", error);
-      alert(errorMessage);
+      alert(error.response?.data?.message || "Error during signup. Please try again.");
     }
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
@@ -111,56 +132,63 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
   return (
     <>
       <NavBar />
-      <div>
+      <div className="container">
+        <div className="formData">
         <h2>Sign Up</h2>
-        <input
+        <div className="username">
+          <label htmlFor="username">Username</label>
+          <input
           name="username"
           value={formData.username}
           onChange={handleChange}
           placeholder="Username"
-        />
-        <div style={{ position: "relative" }}>
-          <input
-            type={passwordVisible ? "text" : "password"} // Toggle between password and text
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
           />
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {passwordVisible ? "Hide" : "Show"} {/* Display show or hide based on visibility */}
-          </button>
+        </div>
+        <div className="password">
+          <label htmlFor="password">Password</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              style={{
+                paddingRight: "50px", // Make room for the button inside the input field
+              }}
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#007bff", // Optional: to style the button color
+              }}
+            >
+              {passwordVisible ? "Hide" : "Show"}
+            </button>
+          </div>
         </div>
 
-        <select name="role" value={formData.role} onChange={handleChange}>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
-        </select>
-
-        {formData.role === "student" && (
-          <select name="grade" value={formData.grade} onChange={handleChange}>
-            <option value="">Select Grade</option>
-            {[...Array(8)].map((_, index) => (
-              <option key={index} value={index + 5}>
-                Grade {index + 5}
-              </option>
-            ))}
+        {/* Hide role selection if ADMIN_SECRET is entered */}
+        <div className="role">
+          <label htmlFor="role">What is your role?</label>
+          {!isAdmin && (
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="parent">Parent</option>
+            <option value="teacher">Teacher</option>
           </select>
         )}
-
-        <select
+        </div>
+        <div className="country">
+          <label htmlFor="country">Enter Country of Residence</label>
+          <select
           name="country"
           value={selectedCountryCode}
           onChange={(e) => {
@@ -179,7 +207,6 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
             </option>
           ))}
         </select>
-
         {!!states.length && (
           <select name="state" value={formData.state} onChange={handleChange}>
             <option value="">Select State</option>
@@ -190,11 +217,16 @@ const SignUp: FC<SignupLoginProps> = ({ setUser }) => {
             ))}
           </select>
         )}
-
-        <input type="file" name="profilePicture" onChange={handleFileChange} />
-
-        <button onClick={handleSignup}>Sign Up</button>
-        <button onClick={() => navigate("/login")}>Already have an account? Log In</button>
+        </div>
+          <div className="profilePicture">
+            <label htmlFor="profilePicture">Upload Your Profile Picture</label>
+            <input type="file" name="profilePicture" onChange={handleFileChange} />
+          </div>
+          <div className="signupBtn">
+          <button onClick={handleSignup}>Sign Up</button>
+          <button onClick={() => navigate("/login")}>Already have an account? Log In</button>
+          </div>
+        </div>
       </div>
     </>
   );

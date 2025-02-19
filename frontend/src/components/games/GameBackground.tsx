@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import "../css/games.css";
+import "../css/index.css";
 
 interface GameBackgroundProps {
   title: string;

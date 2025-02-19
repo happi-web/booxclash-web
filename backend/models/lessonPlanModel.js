@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const lessonPlanSchema = new mongoose.Schema({
+const lessonPlanSchema = new Schema({
   gradeLevel: { type: String, required: true },
   subject: { type: String, required: true },
   topic: { type: String },
@@ -21,6 +21,6 @@ const lessonPlanSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const LessonPlan = mongoose.model('LessonPlan', lessonPlanSchema);
+const LessonPlan = model('LessonPlan', lessonPlanSchema);
 
-module.exports = LessonPlan;
+export default LessonPlan;

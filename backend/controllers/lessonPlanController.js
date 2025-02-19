@@ -1,7 +1,7 @@
-const LessonPlan = require('../models/lessonPlanModel');
-const fs = require('fs');  // For deleting flashcards from the file system if necessary
+import LessonPlan from '../models/lessonPlanModel.js';
+import { existsSync, unlinkSync } from 'fs';  // For deleting flashcards from the file system if necessary
 
-const uploadLessonPlan = async (req, res) => {
+export const uploadLessonPlan = async (req, res) => {
   try {
     const {
       gradeLevel, subject, topic, lesson, duration, learningObjectives,
@@ -29,7 +29,7 @@ const uploadLessonPlan = async (req, res) => {
   }
 };
 
-const getLessonPlans = async (req, res) => {
+export const getLessonPlans = async (req, res) => {
   try {
     const lessons = await LessonPlan.find();
     res.status(200).json(lessons);
@@ -39,7 +39,7 @@ const getLessonPlans = async (req, res) => {
   }
 };
 
-const deleteLessonPlan = async (req, res) => {
+export const deleteLessonPlan = async (req, res) => {
   try {
     const { lesson } = req.params;
 
@@ -53,8 +53,8 @@ const deleteLessonPlan = async (req, res) => {
     // Optional: Delete associated flashcards from the file system if stored locally
     lessonPlan.flashcards.forEach((flashcard) => {
       const filePath = flashcard;  // Assuming the file path is stored directly
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);  // Delete the flashcard file
+      if (existsSync(filePath)) {
+        unlinkSync(filePath);  // Delete the flashcard file
       }
     });
 
@@ -65,4 +65,4 @@ const deleteLessonPlan = async (req, res) => {
   }
 };
 
-module.exports = { uploadLessonPlan, getLessonPlans, deleteLessonPlan };
+export default { uploadLessonPlan, getLessonPlans, deleteLessonPlan };

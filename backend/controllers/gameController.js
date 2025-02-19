@@ -1,7 +1,7 @@
-const Room = require("../models/Room");
+import Room from "../models/Room.js";
 
 // Controller to get room details
-const getRoomDetails = async (req, res) => {
+export const getRoomDetails = async (req, res) => {
   try {
     const { room_id } = req.params;
     const room = await Room.findOne({ room_id });
@@ -27,4 +27,4 @@ const getRoomDetails = async (req, res) => {
   }
 };
 
-module.exports = { getRoomDetails };
+export default { getRoomDetails };

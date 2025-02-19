@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import "./css/lessons.css";
+import "./css/index.css";
 
 interface LessonPlan {
   gradeLevel: string;

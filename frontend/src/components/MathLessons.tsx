@@ -1,7 +1,7 @@
 // MathLessons.tsx
 import React, { useState } from 'react';
 import { lessonsData } from './data/MathLessonsData'; // Import lessonsData from the separate file
-import "./css/lessons.css";
+import "./css/index.css";
 import NavBar from './NavBar';
 import Footer from './Footer';
 

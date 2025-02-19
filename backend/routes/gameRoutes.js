@@ -1,9 +1,9 @@
-const express = require("express");
-const { getRoomDetails } = require("../controllers/gameController");
+import { Router } from "express";
+import { getRoomDetails } from "../controllers/gameController.js";
 
-const router = express.Router();
+const router = Router();
 
 // Route to get room details
 router.get("/room/:room_id", getRoomDetails);
 
-module.exports = router;
+export default router;

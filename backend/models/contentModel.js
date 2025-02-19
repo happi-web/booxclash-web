@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+// Destructure required methods from the default export of mongoose
+const { Schema, models, model } = mongoose;
 
 // Define the schema for the content
-const contentSchema = new mongoose.Schema({
+const contentSchema = new Schema({
   title: {
     type: String,
     required: true, // Title is required
@@ -30,6 +33,6 @@ const contentSchema = new mongoose.Schema({
 });
 
 // Check if the model is already defined to prevent overwriting
-const Content = mongoose.models.Content || mongoose.model('Content', contentSchema);
+const Content = models.Content || model('Content', contentSchema);
 
-module.exports = Content;
+export default Content;

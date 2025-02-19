@@ -1,11 +1,35 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const contentSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  type: { type: String, required: true, enum: ["video", "simulation", "game", "vr_ar"] },
-  link: { type: String }, // For video and simulation
-  thumbnail: { type: String }, // For game and VR/AR
-  component: { type: String }, // For game (e.g., NumberHunt)
+const LessonSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    match: /^Lesson\s\d+/, // Ensures title starts with "Lesson" followed by a number
+  },
+  introduction: { type: String, required: true },
+  videoLink: { type: String, required: true },
+  flashcardRoute: { type: String, required: true },
+  guidedPractice: { type: String, required: true },
+  quiz: [
+    {
+      question: { type: String, required: true },
+      options: { type: [String], required: true }, // Array of options
+      correctAnswer: { type: String, required: true }, // Correct answer
+    },
+  ],
+  simulationRoute: { type: String, required: true },
+  otherReferences: { type: String, required: true },
+  pathway: {
+    type: String,
+    enum: ['science', 'math', 'both'], // Enforcing valid values
+    required: true, // Assuming it is required
+  },
+  level: {
+    type: Number,
+    min: 1,
+    max: 5,
+    required: true, // Assuming it is required
+  },
 });
 
-module.exports = mongoose.model("Content", contentSchema);
+export default model("Lesson", LessonSchema);

@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/support.css";
+import "./css/index.css";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 

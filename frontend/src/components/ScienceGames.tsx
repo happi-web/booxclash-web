@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./css/games.css";
+import "./css/index.css";
 import NavBar from "./NavBar";
 
 const gameImages = [

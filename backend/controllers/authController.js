@@ -1,53 +1,53 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer'); // Import multer for file uploads
-const User = require('../models/userModel');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import User from '../models/userModel.js'; // Updated to use .js for ES module imports
+import dotenv from 'dotenv'; // Import dotenv package
+dotenv.config(); // Load environment variables
 
 // Set up multer storage options
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify folder to save the images
+    cb(null, 'uploads/'); // Specify folder to save images
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname); // Use a unique filename
   },
 });
 
-const upload = multer({ storage: storage }); // Create multer instance with storage options
+export const upload = multer({ storage: storage }); // Create multer instance
 
 // Handle signup
-const signup = async (req, res) => {
-  const { username, password, role, grade, country } = req.body;
+export const signup = async (req, res) => {
+  const { username, password, role, country, adminSecret } = req.body;
   const profilePicture = req.file ? req.file.path : null;
 
   try {
-    // Check if password contains "admin"
-    let userRole = password.includes('admin') ? 'admin' : role;
+    let userRole = role;
 
-    // Validate role
-    if (!['student', 'teacher', 'admin'].includes(userRole)) {
-      return res.status(400).json({ message: 'Invalid role.' });
+    // Only allow "admin" role if the correct secret key is provided
+    if (role === 'admin') {
+      if (adminSecret !== process.env.VITE_ADMIN_SECRET) {
+        return res.status(403).json({ message: 'Invalid admin secret key.' });
+      }
+    } else if (!['teacher', 'parent'].includes(userRole)) {
+      return res.status(400).json({ message: 'Invalid role. Only "teacher" or "parent" allowed.' });
     }
 
-    // Grade is required for students
-    if (userRole === 'student' && !grade) {
-      return res.status(400).json({ message: 'Grade is required for students.' });
-    }
-
-    // Check for existing username
+    // Check if username is already taken
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: 'Username already taken.' });
     }
 
-    // Hash password and create user
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create new user
     const newUser = new User({
       username,
       password: hashedPassword,
       role: userRole,
-      grade: userRole === 'student' ? grade : undefined,
       country,
       profilePicture,
     });
@@ -55,13 +55,13 @@ const signup = async (req, res) => {
     await newUser.save();
 
     const token = jwt.sign(
-      { username, role: userRole },
+      { username, role: userRole, country },
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
 
     res.status(201).json({
-      user: { username, role: userRole, grade, country, profilePicture: newUser.profilePicture },
+      user: { username, role: userRole, country, profilePicture: newUser.profilePicture },
       token,
     });
   } catch (error) {
@@ -70,9 +70,8 @@ const signup = async (req, res) => {
   }
 };
 
-
 // Handle login
-const login = async (req, res) => {
+export const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -87,24 +86,17 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { username, role: user.role, grade: user.grade, country: user.country },
+      { username, role: user.role, country: user.country },
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
 
     res.json({
-      user: { username, role: user.role, grade: user.grade, country: user.country, profilePicture: user.profilePicture },
+      user: { username, role: user.role, country: user.country, profilePicture: user.profilePicture },
       token,
     });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Error logging in. Please try again.' });
   }
-};
-
-// Export the multer upload middleware along with the signup and login functions
-module.exports = {
-  signup,
-  login,
-  upload, // Export the multer instance to use in the routes
 };

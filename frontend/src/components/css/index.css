@@ -10,8 +10,8 @@
 }
 
 :root {
-  --primary-color: #8c52ff;
-  --secondary-color: #ff914d;
+  --primary-color: #120036;
+  --secondary-color: purple;
   --background-color: #f3efe3;
   --text-color: #20180e;
   --box-shadow: 
@@ -29,6 +29,52 @@ body
   display: flex;
   flex-direction: column;
   margin:0 auto;
+}
+.formData
+{
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  font-size: 2rem;
+  flex-direction: column;
+  margin: 10px auto;
+  box-shadow: var(--box-shadow);
+}
+.formData h2
+{
+  text-align: center;
+  padding: 10px;
+  font-size: 3rem;
+  color: #120036;
+}
+.formData input,
+.formData select
+{
+  padding: 10px;
+  width: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.password button
+{
+  position: "absolute";
+  right: "10px";
+  top: "50%";
+  transform: "translateY(-50%)";
+  background: "none";
+  border: "none";
+  cursor: "pointer";
+  color: "#007bff";
+}
+.username,
+.password,
+.role,
+.country,
+.profilePicture
+{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .header
 {

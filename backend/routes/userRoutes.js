@@ -1,9 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const { getUsers, getProfile, updateProfilePicture } = require('../controllers/userController'); // Import the controller
-const authenticate = require('../middlewares/authMiddleware');
-const User = require('../models/userModel'); // Import the User model
+import { Router } from 'express';
+import multer from 'multer';
+import { getUsers, getProfile, updateProfilePicture } from '../controllers/userController.js'; // Import the controller
+import authenticate from '../middlewares/authMiddleware.js';
+import User from '../models/userModel.js';  // Import the default User model
+
+// Create a new router instance
+const router = Router();
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' }); // Store files in 'uploads' folder
@@ -18,7 +20,7 @@ router.get('/profile', authenticate, getProfile);
 router.get('/:username', async (req, res) => {
     try {
         const username = req.params.username;
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ username });  // Use User.findOne() to query the database
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -41,4 +43,5 @@ router.get('/:username', async (req, res) => {
 router.get('/users', authenticate, getUsers);
 router.get('/content', authenticate, getUsers);
 
-module.exports = router;
+// Export the router instance
+export default router;

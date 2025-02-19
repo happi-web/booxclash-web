@@ -1,46 +1,118 @@
-const Content = require("../models/studentModel"); // Import the Content model
+import Lesson from "../models/studentModel.js";
 
-// Controller function to upload content
-const uploadContent = async (req, res) => {
+// Fetch all lessons
+export async function getLessons(req, res) {
   try {
-    const { title, type, link, component } = req.body; // Extract fields from request body
-    const thumbnail = req.files?.thumbnail
-      ? `/uploads/${req.files.thumbnail[0].filename}`
-      : null;
-    const file = req.files?.file
-      ? `/uploads/${req.files.file[0].filename}`
-      : null;
+    const lessons = await Lesson.find(); // Ensure you reference the correct model method
+    res.json(lessons);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch lessons" });
+  }
+}
 
-    // Create new content object based on type
-    const newContent = new Content({
+// Fetch a single lesson by ID
+export async function getLessonById(req, res) {
+  try {
+    const lesson = await Lesson.findById(req.params.id);
+    if (!lesson) return res.status(404).json({ error: "Lesson not found" });
+    res.json(lesson);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch lesson" });
+  }
+}
+
+// Save lesson
+export async function createLesson(req, res) {
+  try {
+    const {
       title,
-      type,
-      link, // Save the provided link for video, simulation, etc.
-      thumbnail, // Only for game and vr_ar
-      component, // Only for game
+      introduction,
+      videoLink,
+      flashcardRoute,
+      guidedPractice,
+      quiz,
+      simulationRoute,
+      otherReferences,
+      pathway, // Include pathway field
+      level,    // Include level field
+    } = req.body;
+
+    // Validate title starts with "Lesson" + number
+    if (!/^Lesson\s\d+/.test(title)) {
+      return res.status(400).json({ error: "Title must start with 'Lesson' followed by a number." });
+    }
+
+    // Validate quiz format
+    if (!Array.isArray(quiz) || quiz.length === 0) {
+      return res.status(400).json({ error: "Quiz must be an array with at least one question." });
+    }
+
+    // Validate pathway field
+    const validPathways = ['science', 'math', 'both'];
+    if (!validPathways.includes(pathway)) {
+      return res.status(400).json({ error: "Pathway must be one of the following: 'science', 'math', or 'both'." });
+    }
+
+    // Validate level field (must be between 1 and 5)
+    if (typeof level !== 'number' || level < 1 || level > 5) {
+      return res.status(400).json({ error: "Level must be a number between 1 and 5." });
+    }
+
+    // Create new lesson
+    const newLesson = new Lesson({
+      title,
+      introduction,
+      videoLink,
+      flashcardRoute,
+      guidedPractice,
+      quiz,
+      simulationRoute,
+      otherReferences,
+      pathway,
+      level,
     });
 
-    // Save content to database
-    const savedContent = await newContent.save();
-    res.status(200).json(savedContent); // Return saved content
+    await newLesson.save();
+    res.status(201).json(newLesson);
   } catch (error) {
-    console.error("Error uploading content:", error);
-    res.status(500).send("Error uploading content.");
+    res.status(500).json({ error: "Failed to save lesson" });
   }
-};
+}
 
-// Controller function to get all content
-const getContent = async (req, res) => {
+// Update lesson
+export async function updateLesson(req, res) {
   try {
-    const contents = await Content.find(); // Fetch all content from the database
-    res.status(200).json(contents); // Return the content as response
-  } catch (error) {
-    console.error("Error fetching content:", error);
-    res.status(500).json({ message: "Error fetching content." });
-  }
-};
+    const { pathway, level } = req.body;
 
-module.exports = {
-  uploadContent,
-  getContent,
-};
+    // Validate pathway field if it's provided
+    if (pathway && !['science', 'math', 'both'].includes(pathway)) {
+      return res.status(400).json({ error: "Pathway must be one of the following: 'science', 'math', or 'both'." });
+    }
+
+    // Validate level field if it's provided
+    if (level && (typeof level !== 'number' || level < 1 || level > 5)) {
+      return res.status(400).json({ error: "Level must be a number between 1 and 5." });
+    }
+
+    const updatedLesson = await Lesson.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedLesson) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+    res.json(updatedLesson);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update lesson" });
+  }
+}
+
+// Delete lesson
+export async function deleteLesson(req, res) {
+  try {
+    const lesson = await Lesson.findByIdAndDelete(req.params.id);
+    if (!lesson) {
+      return res.status(404).json({ error: "Lesson not found" });
+    }
+    res.json({ message: "Lesson deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete lesson" });
+  }
+}

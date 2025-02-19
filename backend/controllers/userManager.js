@@ -1,8 +1,8 @@
-const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
+import { hash } from 'bcryptjs';
+import User from '../models/userModel.js';
 
 // Fetch all users
-exports.getAllUsers = async (req, res) => {
+export async function getAllUsers(req, res) {
   try {
     const users = await User.find({}, '_id username role grade profilePicture country');
     res.json(users);
@@ -10,10 +10,10 @@ exports.getAllUsers = async (req, res) => {
     console.error('Error fetching users:', error); // Log the error for debugging
     res.status(500).json({ error: 'Failed to fetch users' });
   }
-};
+}
 
 // Create a new user
-exports.createUser = async (req, res) => {
+export async function createUser(req, res) {
   try {
     const { username, password, role, grade } = req.body;
 
@@ -23,7 +23,7 @@ exports.createUser = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hash(password, 10);
 
     // Create a new user document
     const newUser = new User({ 
@@ -40,10 +40,10 @@ exports.createUser = async (req, res) => {
     console.error('Error creating user:', error); // Log the error for debugging
     res.status(500).json({ error: 'Failed to create user' });
   }
-};
+}
 
 // Delete a user
-exports.deleteUser = async (req, res) => {
+export async function deleteUser(req, res) {
   try {
     const { id } = req.params;
 
@@ -64,4 +64,4 @@ exports.deleteUser = async (req, res) => {
     console.error('Error deleting user:', error); // Log the error for debugging
     res.status(500).json({ error: 'Failed to delete user' });
   }
-};
+}

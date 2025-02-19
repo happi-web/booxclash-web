@@ -23,6 +23,14 @@ import Analytics from './components/Analytics';
 import Settings from './components/Settings';
 import Games from './components/students/components/Games';
 import GameRoom from "./components/games/GameRoom";
+import ParentDashboard from './components/ParentDashboard';
+import RegisterChild from './components/RegisterChild';
+import ChildLogin from './components/ChildLogin';
+import Lessons from './components/students/components/Lessons';
+import SciencePathway from './components/students/components/SciencePathway';
+import MathPathway from './components/students/components/MathPathway';
+import PathwaySteps from "./components/PathwaySteps";
+
 
 // Define the user type with only username and token
 interface User {
@@ -50,14 +58,21 @@ const Main: React.FC = () => {
         <Route path="/knockout" element={<Knockout />} />
         <Route path="/numberHunt" element={<NumberHunt />} />
         <Route path="/game" element={<Games />} />
+        <Route path="/lessons/:lessonId" element={<Lessons />} />
+        <Route path="/pathway/:pathwayId" element={<PathwaySteps />} />
+
 
         <Route path="/signup" element={<SignUp setUser={setUser} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/child-login" element={<ChildLogin/>} />
 
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
-
+        <Route path="/parent-dashboard" element={<ParentDashboard />} />
+        <Route path="/science" element={<SciencePathway />} />
+        <Route path="/math" element={<MathPathway />} />
+        <Route path="/registerChild" element={<RegisterChild />} />
 
         <Route path="/profile" element={<Profile />} />
         <Route path="/user-management" element={<UserManagement />} />

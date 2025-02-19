@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../css/backgroundGame.css";
+import "../css/index.css";
 import GameBackground from "./GameBackground";
 
 const NumberHunt: React.FC = () => {

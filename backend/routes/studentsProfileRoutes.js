@@ -1,12 +1,12 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');  // Import multer for file uploads
-const User = require('../models/userModel');  // Import the User model
+import { Router } from 'express';
+import jwt from 'jsonwebtoken'; // Correct way to import `jsonwebtoken`
+import multer, { diskStorage } from 'multer';  // Import multer for file uploads
+import User from '../models/userModel.js';  // Import the User model
 
-const router = express.Router();
+const router = Router();
 
 // Set up multer storage options
-const storage = multer.diskStorage({
+const storage = diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');  // Specify folder to save the images
   },
@@ -26,7 +26,7 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY); // Use `jwt.verify` here
     req.user = decoded;  // Attach user data to the request object
     next();  // Proceed to the next middleware/route handler
   } catch (error) {
@@ -38,7 +38,7 @@ const verifyToken = (req, res, next) => {
 // Route to get the user's profile data
 router.get('/profile', verifyToken, async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.user.username });
+    const user = await User.findOne({ username: req.user.username });  // Use the User model
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
@@ -65,7 +65,7 @@ router.put('/profile/picture', verifyToken, upload.single('profilePicture'), asy
     }
 
     // Update the user's profile with the new profile picture path
-    const user = await User.findOne({ username: req.user.username });
+    const user = await User.findOne({ username: req.user.username });  // Use the User model
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
@@ -81,4 +81,4 @@ router.put('/profile/picture', verifyToken, upload.single('profilePicture'), asy
   }
 });
 
-module.exports = router;
+export default router;

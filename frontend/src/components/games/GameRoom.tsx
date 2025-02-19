@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../css/gameroom.css";
+import "../css/index.css";
 
 interface Player {
   username: string;

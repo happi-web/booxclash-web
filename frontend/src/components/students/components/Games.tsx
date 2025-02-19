@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import "../../css/games.css";
+import "../../css/index.css";
 
 const Games = () => {
   const [games, setGames] = useState<any[]>([]);

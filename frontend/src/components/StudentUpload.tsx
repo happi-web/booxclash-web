@@ -1,207 +1,206 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import "./css/lessons.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-interface Content {
-  _id: string;
+type QuizQuestion = {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+};
+
+type Pathway = {
+  _id?: string;
   title: string;
-  type: "video" | "simulation" | "game" | "vr_ar";
-  link?: string; // For video and simulation
-  thumbnail?: string; // For game and VR/AR
-  component?: string; // For game (e.g., NumberHunt)
-}
+  subject: string;
+  sections: {
+    introduction: string;
+    metaphor: string;
+    lessonExplanation: string;
+    video: string;
+    guidedPractice: string;
+    quiz: QuizQuestion[];
+    simulation: string;
+    references: string[];
+  };
+};
 
 const StudentUpload = () => {
-  const [contentData, setContentData] = useState<Content>({
-    _id: "",
+  const [pathways, setPathways] = useState<Pathway[]>([]);
+  const [form, setForm] = useState<Pathway>({
     title: "",
-    type: "video", // Default type is video
-    link: "",
-    thumbnail: "",
-    component: "",
+    subject: "",
+    sections: {
+      introduction: "",
+      metaphor: "",
+      lessonExplanation: "",
+      video: "",
+      guidedPractice: "",
+      quiz: [{ question: "", options: ["", "", "", ""], correctAnswer: "" }],
+      simulation: "",
+      references: [""],
+    },
   });
 
-  const [uploadedContent, setUploadedContent] = useState<Content[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Fetch uploaded content from backend
   useEffect(() => {
-    fetchContent();
+    fetchPathways();
   }, []);
 
-  const fetchContent = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/api/content", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+  const fetchPathways = async () => {
+    const res = await axios.get<Pathway[]>("http://localhost:4000/api/pathways");
+    setPathways(res.data);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSectionChange = (
+    section: keyof Pathway["sections"],
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { value } = e.target;
+
+    if (section === "references") {
+      setForm((prev) => ({
+        ...prev,
+        sections: {
+          ...prev.sections,
+          references: value.split(",").map((ref) => ref.trim()),
         },
-      });
-      const data: Content[] = await response.json();
-      setUploadedContent(data);
-    } catch (error) {
-      console.error("Error fetching content:", error);
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [section]: value,
+        },
+      }));
     }
   };
 
-  const handleContentTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setContentData((prev) => ({
+  const handleQuizChange = (index: number, field: keyof QuizQuestion, value: string) => {
+    const newQuiz = [...form.sections.quiz];
+    if (field === "options") {
+      newQuiz[index].options = value.split(",");
+    } else {
+      newQuiz[index][field] = value;
+    }
+
+    setForm((prev) => ({
       ...prev,
-      type: value as Content["type"],
-      link: "",
-      thumbnail: "",
-      component: "",
+      sections: { ...prev.sections, quiz: newQuiz },
     }));
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setContentData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files) {
-      setContentData((prev) => ({ ...prev, [name]: files[0] }));
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", contentData.title);
-    formData.append("type", contentData.type);
 
-    if (contentData.type === "video" || contentData.type === "simulation") {
-      formData.append("link", contentData.link || "");
-    } else if (contentData.type === "game") {
-      formData.append("thumbnail", contentData.thumbnail || "");
-      formData.append("component", contentData.component || "");
+    if (editingId) {
+      await axios.put(`http://localhost:4000/api/pathways/${editingId}`, form);
+      setEditingId(null);
+    } else {
+      await axios.post("http://localhost:4000/api/pathways", form);
     }
 
-    try {
-      setIsUploading(true);
-      const response = await fetch("http://localhost:4000/api/upload-content", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
+    fetchPathways();
+    resetForm();
+  };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        alert(`Error: ${errorText}`);
-        return;
-      }
+  const handleEdit = (pathway: Pathway) => {
+    setForm(pathway);
+    setEditingId(pathway._id || null);
+  };
 
-      const result = await response.json();
-      setUploadedContent((prev) => [...prev, result]);
-      setIsUploading(false);
-      setContentData({
-        _id: "",
-        title: "",
-        type: "video",
-        link: "",
-        thumbnail: "",
-        component: "",
-      });
-    } catch (error) {
-      setIsUploading(false);
-      console.error("Upload failed:", error);
-      alert("An error occurred while uploading the content.");
-    }
+  const handleDelete = async (id: string) => {
+    await axios.delete(`http://localhost:4000/api/pathways/${id}`);
+    fetchPathways();
+  };
+
+  const resetForm = () => {
+    setForm({
+      title: "",
+      subject: "",
+      sections: {
+        introduction: "",
+        metaphor: "",
+        lessonExplanation: "",
+        video: "",
+        guidedPractice: "",
+        quiz: [{ question: "", options: ["", "", "", ""], correctAnswer: "" }],
+        simulation: "",
+        references: [""],
+      },
+    });
   };
 
   return (
-    <div>
-      <h1>Upload Content for Students</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Content Type</label>
-          <select name="type" onChange={handleContentTypeChange} value={contentData.type}>
-            <option value="video">Video</option>
-            <option value="simulation">Simulation</option>
-            <option value="game">Game</option>
-          </select>
-        </div>
+    <div className="p-5">
+      <h1 className="text-xl font-bold">{editingId ? "Edit Pathway" : "Admin Dashboard"}</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title and Subject */}
+        <label>Title</label>
+        <input name="title" value={form.title} onChange={handleChange} className="w-full p-2 border rounded" />
 
-        <div>
-          <label>Title</label>
-          <input
-            type="text"
-            name="title"
-            value={contentData.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
+        <label>Subject</label>
+        <input name="subject" value={form.subject} onChange={handleChange} className="w-full p-2 border rounded" />
 
-        {/* Link input for video and simulation */}
-        {(contentData.type === "video" || contentData.type === "simulation") && (
-          <div>
-            <label>Link</label>
-            <input
-              type="text"
-              name="link"
-              value={contentData.link}
-              onChange={handleInputChange}
-              required
-            />
+        {/* Sections */}
+        <label>Introduction</label>
+        <textarea name="introduction" value={form.sections.introduction} onChange={(e) => handleSectionChange("introduction", e)} className="w-full p-2 border rounded" />
+
+        <label>Metaphor</label>
+        <textarea name="metaphor" value={form.sections.metaphor} onChange={(e) => handleSectionChange("metaphor", e)} className="w-full p-2 border rounded" />
+
+        <label>Lesson Explanation</label>
+        <textarea name="lessonExplanation" value={form.sections.lessonExplanation} onChange={(e) => handleSectionChange("lessonExplanation", e)} className="w-full p-2 border rounded" />
+
+        <label>Video URL</label>
+        <input name="video" value={form.sections.video} onChange={(e) => handleSectionChange("video", e)} className="w-full p-2 border rounded" />
+
+        <label>Guided Practice</label>
+        <textarea name="guidedPractice" value={form.sections.guidedPractice} onChange={(e) => handleSectionChange("guidedPractice", e)} className="w-full p-2 border rounded" />
+
+        <label>Simulation</label>
+        <input name="simulation" value={form.sections.simulation} onChange={(e) => handleSectionChange("simulation", e)} className="w-full p-2 border rounded" />
+
+        {/* References */}
+        <label>References</label>
+        <input name="references" value={form.sections.references.join(", ")} onChange={(e) => handleSectionChange("references", e)} className="w-full p-2 border rounded" />
+
+        {/* Quiz */}
+        <h3 className="font-bold">Quiz</h3>
+        {form.sections.quiz.map((q, index) => (
+          <div key={index} className="p-3 border rounded">
+            <label>Question</label>
+            <input value={q.question} onChange={(e) => handleQuizChange(index, "question", e.target.value)} className="w-full p-2 border rounded" />
+
+            <label>Options (comma-separated)</label>
+            <input value={q.options.join(", ")} onChange={(e) => handleQuizChange(index, "options", e.target.value)} className="w-full p-2 border rounded" />
+
+            <label>Correct Answer</label>
+            <input value={q.correctAnswer} onChange={(e) => handleQuizChange(index, "correctAnswer", e.target.value)} className="w-full p-2 border rounded" />
           </div>
-        )}
+        ))}
 
-        {/* Thumbnail and component for games */}
-        {contentData.type === "game" && (
-          <>
-            <div>
-              <label>Upload Thumbnail</label>
-              <input type="file" name="thumbnail" onChange={handleFileChange} required />
-            </div>
-            <div>
-              <label>Game Component</label>
-              <input
-                type="text"
-                name="component"
-                value={contentData.component}
-                onChange={handleInputChange}
-                placeholder="e.g., NumberHunt"
-                required
-              />
-            </div>
-          </>
-        )}
-
-        <button type="submit" disabled={isUploading}>
-          {isUploading ? "Uploading..." : "Upload Content"}
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">
+          {editingId ? "Update Pathway" : "Add Pathway"}
         </button>
       </form>
 
-      <h2>Uploaded Content</h2>
-      <ul>
-        {uploadedContent.map((content) => (
-          <li key={content._id}>
-            <h3>{content.title}</h3>
-            {content.link && (
-              <p>
-                Link:{" "}
-                <a href={content.link} target="_blank" rel="noopener noreferrer">
-                  {content.link}
-                </a>
-              </p>
-            )}
-            {content.type === "game" && (
-              <>
-                <p>Component: {content.component}</p>
-                <img
-                  src={`http://localhost:4000${content.thumbnail}`}
-                  alt={content.title}
-                  width="200"
-                />
-              </>
-            )}
-          </li>
+      {/* List of Pathways */}
+      <div className="mt-5">
+        {pathways.map((p) => (
+          <div key={p._id} className="p-4 border rounded">
+            <h2 className="text-lg font-bold">{p.title}</h2>
+            <p>{p.subject}</p>
+            <button onClick={() => handleEdit(p)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+            <button onClick={() => handleDelete(p._id!)} className="bg-red-500 text-white px-3 py-1 rounded ml-2">Delete</button>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

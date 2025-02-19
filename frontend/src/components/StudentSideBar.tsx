@@ -9,14 +9,11 @@ type SidebarProps = {
           <li onClick={() => onSelect('Profile')} style={{ cursor: 'pointer', margin: '10px 0' }}>
             Profile
           </li>
-          <li onClick={() => onSelect('Videos')} style={{ cursor: 'pointer', margin: '10px 0' }}>
-            Videos
-          </li>
-          <li onClick={() => onSelect('Simulations')} style={{ cursor: 'pointer', margin: '10px 0' }}>
-            Simulations
+          <li onClick={() => onSelect('Pathway')} style={{ cursor: 'pointer', margin: '10px 0' }}>
+            Pathways
           </li>
           <li onClick={() => onSelect('Games')} style={{ cursor: 'pointer', margin: '10px 0' }}>
-            Games
+            Competitions
           </li>
           <li onClick={() => onSelect('Science Virtual Lab')} style={{ cursor: 'pointer', margin: '10px 0' }}>
             Science Virtual Lab
