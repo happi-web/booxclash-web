@@ -85,3 +85,74 @@
     cursor: not-allowed;
   }
   
+  .pathway-selection {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .pathway-buttons {
+    margin: 20px 0;
+  }
+  
+  .math-pathway-button,
+  .science-pathway-button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  .math-pathway-button {
+    background-color: #007bff;
+  }
+  
+  .math-pathway-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .science-pathway-button {
+    background-color: #28a745;
+  }
+  
+  .science-pathway-button:hover {
+    background-color: #1e7e34;
+  }
+  
+  h2 {
+    margin-top: 20px;
+    color: #333;
+  }
+  
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .lesson-button {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+  }
+  
+  .lesson-button:hover {
+    transform: translateY(-5px);
+    background-color: #e0e0e0;
+  }
+  
+  .math-lesson {
+    border-left: 4px solid #007bff;
+  }
+  
+  .science-lesson {
+    border-left: 4px solid #28a745;
+  }
+  

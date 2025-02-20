@@ -59,7 +59,9 @@ const Main: React.FC = () => {
         <Route path="/numberHunt" element={<NumberHunt />} />
         <Route path="/game" element={<Games />} />
         <Route path="/lessons/:lessonId" element={<Lessons />} />
-        <Route path="/pathway/:pathwayId" element={<PathwaySteps />} />
+        <Route path="/pathway/:subject/lesson/:lessonNumber" element={<PathwaySteps />} />
+
+
 
 
         <Route path="/signup" element={<SignUp setUser={setUser} />} />
